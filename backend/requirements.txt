@@ -1,1 +1,6 @@
 pandas
+Flask
+Flask-Cors
+fuzzywuzzy
+python-Levenshtein
+psycopg2-binary
