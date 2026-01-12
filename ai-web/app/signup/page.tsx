@@ -42,13 +42,18 @@ export default function SignupPage() {
       });
 
       if (!res.ok) {
-        setError("Signup failed. Please try again.");
+        const errorData = await res.json();
+        setError(errorData.message || "Signup failed. Please try again.");
         return;
       }
 
+      // Clear any existing data for this user
       const userId = email.toLowerCase();
       localStorage.removeItem(`conversations_${userId}`);
       localStorage.setItem(`conversations_${userId}`, JSON.stringify([]));
+      
+      // Show success message and redirect
+      alert("Account created successfully! Please log in with your credentials.");
       router.push("/login");
     } catch (err) {
       console.error("Signup failed:", err);

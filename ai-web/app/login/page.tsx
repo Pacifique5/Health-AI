@@ -33,18 +33,35 @@ export default function LoginPage() {
       });
 
       if (!res.ok) {
-        setError("Invalid email or password. Please try again.");
+        const errorData = await res.json();
+        setError(errorData.message || "Invalid email or password. Please try again.");
         return;
       }
 
+      const data = await res.json();
       const userId = username.toLowerCase();
+      
+      // Store authentication info and user data
       localStorage.setItem("authToken", "loggedin");
       localStorage.setItem("userId", userId);
+      
+      // Store user info for profile display
+      if (data.user) {
+        localStorage.setItem("userInfo", JSON.stringify(data.user));
+      } else {
+        // Fallback user info
+        localStorage.setItem("userInfo", JSON.stringify({
+          username: username,
+          email: username
+        }));
+      }
+      
+      // Initialize conversations if not exists
       if (!localStorage.getItem(`conversations_${userId}`)) {
         localStorage.setItem(`conversations_${userId}`, JSON.stringify([]));
       }
 
-      router.push("/");
+      router.push("/dashboard");
     } catch (err) {
       console.error("Login failed:", err);
       setError("Something went wrong. Please try again later.");

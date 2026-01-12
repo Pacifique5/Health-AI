@@ -1,19 +1,35 @@
 import os
 import pandas as pd
 from fuzzywuzzy import process
-import psycopg2
 
 class SymptomPredictor:
     def __init__(self, csv_path=None):
-        if csv_path is None:
-            # Always resolve path relative to this file
-            csv_path = os.path.join(os.path.dirname(__file__), '../data/disease_data.csv')
-        self.df = pd.read_csv(csv_path)
-        self.df.columns = self.df.columns.str.lower()  # Standardize column names to lowercase
-        self.df['symptoms'] = self.df['symptoms'].apply(
-            lambda x: [s.strip().lower() for s in x.split(',')]
-        )
-        self.symptom_vocab = sorted({sym for symptoms in self.df['symptoms'] for sym in symptoms})
+        try:
+            if csv_path is None:
+                # Always resolve path relative to this file
+                csv_path = os.path.join(os.path.dirname(__file__), '../data/disease_data.csv')
+            
+            if not os.path.exists(csv_path):
+                raise FileNotFoundError(f"Disease data file not found: {csv_path}")
+                
+            self.df = pd.read_csv(csv_path)
+            print(f"✅ Loaded {len(self.df)} diseases from {csv_path}")
+            
+            # Standardize column names to lowercase
+            self.df.columns = self.df.columns.str.lower()
+            
+            # Clean and process symptoms
+            self.df['symptoms'] = self.df['symptoms'].apply(
+                lambda x: [s.strip().lower() for s in str(x).split(',') if s.strip()]
+            )
+            
+            # Build symptom vocabulary
+            self.symptom_vocab = sorted({sym for symptoms in self.df['symptoms'] for sym in symptoms})
+            print(f"✅ Built vocabulary with {len(self.symptom_vocab)} unique symptoms")
+            
+        except Exception as e:
+            print(f"❌ Error initializing SymptomPredictor: {e}")
+            raise e
 
     def preprocess_input(self, user_symptoms):
         cleaned = []
@@ -55,11 +71,37 @@ class SymptomPredictor:
 
 class GreetingsResponder:
     def __init__(self, csv_path=None):
-        if csv_path is None:
-            csv_path = os.path.join(os.path.dirname(__file__), '../data/greetings.csv')
-        self.df = pd.read_csv(csv_path)
-        self.greetings = self.df['greeting'].str.lower().tolist()
-        self.responses = dict(zip(self.df['greeting'].str.lower(), self.df['response']))
+        try:
+            if csv_path is None:
+                csv_path = os.path.join(os.path.dirname(__file__), '../data/greetings.csv')
+            
+            if not os.path.exists(csv_path):
+                print(f"⚠️ Greetings file not found: {csv_path}, using default responses")
+                # Create default greetings
+                self.greetings = ['hello', 'hi', 'hey', 'good morning', 'good afternoon', 'good evening']
+                self.responses = {
+                    'hello': 'Hello! How can I assist you today?',
+                    'hi': 'Hi there! What symptoms are you experiencing?',
+                    'hey': 'Hey! How can I help you?',
+                    'good morning': 'Good morning! How are you feeling today?',
+                    'good afternoon': 'Good afternoon! How can I help you?',
+                    'good evening': 'Good evening! What can I do for you?'
+                }
+            else:
+                self.df = pd.read_csv(csv_path)
+                self.greetings = self.df['greeting'].str.lower().tolist()
+                self.responses = dict(zip(self.df['greeting'].str.lower(), self.df['response']))
+                print(f"✅ Loaded {len(self.greetings)} greetings from {csv_path}")
+                
+        except Exception as e:
+            print(f"❌ Error initializing GreetingsResponder: {e}")
+            # Fallback to basic greetings
+            self.greetings = ['hello', 'hi', 'hey']
+            self.responses = {
+                'hello': 'Hello! How can I assist you today?',
+                'hi': 'Hi there! What symptoms are you experiencing?',
+                'hey': 'Hey! How can I help you?'
+            }
 
     def get_response(self, user_input):
         user_input = user_input.lower().strip()
@@ -68,24 +110,38 @@ class GreetingsResponder:
             return self.responses.get(match)
         return None
 
-# Placeholder for login and signup functionality
-# This will be expanded to include authentication using a PostgreSQL database
+# Simple in-memory user storage for development
+# In production, this should use a proper database
+USERS_DB = {
+    "admin@example.com": {"username": "Admin User", "password": "admin123", "email": "admin@example.com"},
+    "user@example.com": {"username": "Test User", "password": "user123", "email": "user@example.com"}
+}
 
 def login(email, password):
-    # Only allow login with email
-    conn = psycopg2.connect("dbname=symptomai user=postgres password=fiqueboi")
-    cur = conn.cursor()
-    cur.execute("SELECT * FROM users WHERE email = %s AND password = %s", (email, password))
-    user = cur.fetchone()
-    cur.close()
-    conn.close()
-    return user
+    """Simple login function using in-memory storage"""
+    try:
+        user_data = USERS_DB.get(email)
+        if user_data and user_data["password"] == password:
+            return {
+                "email": email, 
+                "username": user_data["username"]
+            }
+        return None
+    except Exception as e:
+        print(f"Login error: {e}")
+        return None
 
 def signup(username, email, password):
-    # Signup logic with email
-    conn = psycopg2.connect("dbname=symptomai user=postgres password=fiqueboi")
-    cur = conn.cursor()
-    cur.execute("INSERT INTO users (username, email, password) VALUES (%s, %s, %s)", (username, email, password))
-    conn.commit()
-    cur.close()
-    conn.close()
+    """Simple signup function using in-memory storage"""
+    try:
+        if email in USERS_DB:
+            raise ValueError("User already exists")
+        USERS_DB[email] = {
+            "username": username, 
+            "password": password, 
+            "email": email
+        }
+        return True
+    except Exception as e:
+        print(f"Signup error: {e}")
+        raise e
