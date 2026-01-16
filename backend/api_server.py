@@ -145,6 +145,8 @@ def root():
     }), 200
 
 if __name__ == '__main__':
+    import os
+    port = int(os.environ.get('PORT', 5000))
     print("🚀 Starting SymptomAI Backend Server...")
     print("📊 Available endpoints:")
     print("  - GET  /           : API information")
@@ -152,5 +154,5 @@ if __name__ == '__main__':
     print("  - POST /api/analyze: Symptom analysis")
     print("  - POST /api/login  : User login")
     print("  - POST /api/signup : User signup")
-    print("🌐 Server will be available at: http://localhost:5000")
-    app.run(host="localhost", port=5000, debug=True) 
+    print(f"🌐 Server will be available at: http://0.0.0.0:{port}")
+    app.run(host="0.0.0.0", port=port, debug=False) 
