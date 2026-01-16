@@ -1,45 +1,63 @@
-# 🔧 Render Deployment Fix
+# 🔧 Render Deployment Fix - Python 3.13 Compatibility
 
 ## Problem
-Render shows: `gunicorn: command not found`
+Render is using Python 3.13.4, but `python-Levenshtein` doesn't support Python 3.13 yet.
+
+**Error:** Compilation errors with `_PyUnicode_FastCopyCharacters` and `_PyLong_IsCompact`
 
 ## Solution Applied ✅
 
-I've fixed two things:
+I've made three changes to fix the compatibility issue:
 
-### 1. Updated `backend/requirements.txt`
-Added specific version numbers to ensure proper installation:
+### 1. Updated `backend/runtime.txt`
+Using Python 3.11.9 (stable and fully compatible):
+```
+python-3.11.9
+```
+
+### 2. Updated `backend/requirements.txt`
+Replaced `fuzzywuzzy` + `python-Levenshtein` with modern `rapidfuzz`:
 ```
 pandas==2.0.3
 Flask==3.0.0
 Flask-Cors==4.0.0
-fuzzywuzzy==0.18.0
-python-Levenshtein==0.21.1
-psycopg2-binary==2.9.9
+rapidfuzz==3.6.1
 requests==2.31.0
 gunicorn==21.2.0
 ```
 
-### 2. Created `backend/runtime.txt`
-Specifies Python version explicitly:
+**Why rapidfuzz?**
+- ✅ Modern replacement for fuzzywuzzy
+- ✅ Fully compatible with Python 3.11 and 3.13
+- ✅ Faster performance
+- ✅ Same API, drop-in replacement
+- ✅ No compilation issues
+
+### 3. Updated `backend/app/predictor.py`
+Changed import from:
+```python
+from fuzzywuzzy import process
 ```
-python-3.11.0
+To:
+```python
+from rapidfuzz import process, fuzz
 ```
+
+### 4. Updated `backend/start_server.py`
+Changed dependency check from `fuzzywuzzy` to `rapidfuzz`
 
 ---
 
-## 🚀 Next Steps
-
-### Option 1: Push Changes and Redeploy (Recommended)
+## 🚀 Next Steps - Push and Deploy
 
 ```bash
-# Commit the fixes
-git add backend/requirements.txt backend/runtime.txt
-git commit -m "Fix: Add version pins and runtime.txt for Render deployment"
+# Commit all the fixes
+git add backend/requirements.txt backend/runtime.txt backend/app/predictor.py backend/start_server.py
+git commit -m "Fix: Replace fuzzywuzzy with rapidfuzz for Python 3.11 compatibility"
 git push
 ```
 
-Render will automatically redeploy with the fixes!
+**Render will automatically redeploy!** 🚀
 
 ---
 

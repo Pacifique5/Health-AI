@@ -1,6 +1,6 @@
 import os
 import pandas as pd
-from fuzzywuzzy import process
+from rapidfuzz import process, fuzz
 
 class SymptomPredictor:
     def __init__(self, csv_path=None):

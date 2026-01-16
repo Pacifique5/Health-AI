@@ -12,7 +12,7 @@ def check_dependencies():
         import pandas
         import flask
         import flask_cors
-        import fuzzywuzzy
+        import rapidfuzz
         print("✅ All dependencies are installed")
         return True
     except ImportError as e:
