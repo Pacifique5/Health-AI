@@ -1,32 +1,525 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+  Activity,
+  Heart,
+  Shield,
+  Clock,
+  Bot,
+  CheckCircle,
+  Users,
+  Sparkles,
+  ArrowRight,
+  Menu,
+  X,
+  Phone,
+  Mail,
+  MapPin,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
-export default function HomePage() {
+export default function LandingPage() {
   const router = useRouter();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    // Check if user is authenticated
+    // Check if user is already authenticated
     const token = localStorage.getItem("authToken");
     const userId = localStorage.getItem("userId");
     
     if (token && userId) {
-      // User is authenticated, redirect to dashboard
-      router.replace("/dashboard");
-    } else {
-      // User is not authenticated, redirect to login
-      router.replace("/login");
+      setIsAuthenticated(true);
     }
-  }, [router]);
+  }, []);
 
-  // Show loading while redirecting
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const features = [
+    {
+      icon: Activity,
+      title: "Symptom Analysis",
+      description: "Advanced AI-powered symptom checker that helps identify potential health conditions based on your symptoms.",
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      icon: Heart,
+      title: "Heart Health Monitoring",
+      description: "Comprehensive cardiovascular health assessment with risk factor evaluation and personalized recommendations.",
+      color: "from-red-500 to-pink-500",
+    },
+    {
+      icon: Shield,
+      title: "Preventive Care",
+      description: "Proactive health management with personalized wellness plans, vaccination reminders, and health screenings.",
+      color: "from-green-500 to-emerald-500",
+    },
+    {
+      icon: Clock,
+      title: "Medication Reminders",
+      description: "Never miss your medication with smart reminders and comprehensive medication tracking features.",
+      color: "from-purple-500 to-violet-500",
+    },
+  ];
+
+  const benefits = [
+    "24/7 AI-powered health assistance",
+    "Instant symptom analysis and recommendations",
+    "Personalized health insights",
+    "Emergency contact information",
+    "Secure and private conversations",
+    "Multi-language support",
+  ];
+
+  const stats = [
+    { number: "41+", label: "Diseases Covered" },
+    { number: "24/7", label: "Available Support" },
+    { number: "100%", label: "Privacy Protected" },
+    { number: "1000+", label: "Users Helped" },
+  ];
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <div className="text-center">
-        <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-4 border-blue-500 border-t-transparent"></div>
-        <p className="text-slate-600">Loading SymptomAI...</p>
-      </div>
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <nav
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          isScrolled
+            ? "bg-white/95 backdrop-blur-md shadow-md"
+            : "bg-transparent"
+        }`}
+      >
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
+            {/* Logo */}
+            <a href="#home" className="flex items-center gap-2 cursor-pointer">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
+                <Bot className="h-6 w-6 text-white" />
+              </div>
+              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                SymptomAI
+              </span>
+            </a>
+
+            {/* Desktop Navigation */}
+            <div className="hidden md:flex items-center gap-8">
+              <a href="#home" className="text-gray-700 hover:text-blue-600 transition font-medium">
+                Home
+              </a>
+              <a href="#features" className="text-gray-700 hover:text-blue-600 transition font-medium">
+                Features
+              </a>
+              <a href="#about" className="text-gray-700 hover:text-blue-600 transition font-medium">
+                About Us
+              </a>
+              <a href="#contact" className="text-gray-700 hover:text-blue-600 transition font-medium">
+                Contact
+              </a>
+              {isAuthenticated ? (
+                <Link href="/dashboard">
+                  <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-6 py-2 rounded-full shadow-lg">
+                    Go to Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/login">
+                  <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-6 py-2 rounded-full shadow-lg">
+                    Get Started
+                  </Button>
+                </Link>
+              )}
+            </div>
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden bg-white border-t border-gray-200 shadow-lg animate-in slide-in-from-top duration-200">
+            <div className="container mx-auto px-4 py-4 space-y-3">
+              <a 
+                href="#home" 
+                onClick={() => setIsMenuOpen(false)}
+                className="block py-2 text-gray-700 hover:text-blue-600 transition font-medium"
+              >
+                Home
+              </a>
+              <a 
+                href="#features" 
+                onClick={() => setIsMenuOpen(false)}
+                className="block py-2 text-gray-700 hover:text-blue-600 transition font-medium"
+              >
+                Features
+              </a>
+              <a 
+                href="#about" 
+                onClick={() => setIsMenuOpen(false)}
+                className="block py-2 text-gray-700 hover:text-blue-600 transition font-medium"
+              >
+                About Us
+              </a>
+              <a 
+                href="#contact" 
+                onClick={() => setIsMenuOpen(false)}
+                className="block py-2 text-gray-700 hover:text-blue-600 transition font-medium"
+              >
+                Contact
+              </a>
+              {isAuthenticated ? (
+                <Link href="/dashboard">
+                  <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-2 rounded-full shadow-lg">
+                    Go to Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <Link href="/login">
+                  <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-2 rounded-full shadow-lg">
+                    Get Started
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
+        )}
+      </nav>
+
+      {/* Hero Section */}
+      <section id="home" className="relative pt-24 sm:pt-32 pb-16 sm:pb-24 overflow-hidden">
+        {/* Background Decorations */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl" />
+
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="space-y-6 sm:space-y-8">
+              <div className="inline-flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full">
+                <Sparkles className="h-4 w-4 text-blue-600" />
+                <span className="text-sm font-medium text-blue-600">AI-Powered Health Assistant</span>
+              </div>
+
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+                Your Smart Health
+                <span className="block bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  Companion
+                </span>
+              </h1>
+
+              <p className="text-lg sm:text-xl text-gray-600 leading-relaxed">
+                SymptomAI uses advanced artificial intelligence to help you understand your symptoms, 
+                get personalized health insights, and connect with the right healthcare professionals. 
+                Your health journey starts here.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                {isAuthenticated ? (
+                  <Link href="/dashboard">
+                    <Button className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-8 py-6 rounded-full shadow-lg text-lg font-semibold flex items-center justify-center gap-2">
+                      Go to Dashboard
+                      <ArrowRight className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/login">
+                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-6 rounded-full shadow-lg text-lg font-semibold flex items-center justify-center gap-2">
+                      Get Started
+                      <ArrowRight className="h-5 w-5" />
+                    </Button>
+                  </Link>
+                )}
+                <a href="#features">
+                  <Button variant="outline" className="w-full sm:w-auto px-8 py-6 rounded-full text-lg font-semibold border-2 border-gray-300 hover:border-blue-500 hover:text-blue-600">
+                    Learn More
+                  </Button>
+                </a>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8">
+                {stats.map((stat, index) => (
+                  <div key={index} className="text-center">
+                    <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                      {stat.number}
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Content - Illustration */}
+            <div className="relative hidden lg:block">
+              <div className="relative w-full h-[500px] bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 shadow-2xl">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-3xl" />
+                <div className="relative h-full flex items-center justify-center">
+                  <div className="space-y-6 w-full">
+                    {/* Chat Bubbles Illustration */}
+                    <div className="bg-white rounded-2xl p-4 shadow-lg ml-auto max-w-xs">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
+                          <Bot className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-700">Hello! I'm SymptomAI. How can I help you today?</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-4 shadow-lg mr-auto max-w-xs">
+                      <p className="text-sm text-white">I have a headache and fever</p>
+                    </div>
+                    <div className="bg-white rounded-2xl p-4 shadow-lg ml-auto max-w-xs">
+                      <div className="flex items-start gap-3">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
+                          <Bot className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-sm text-gray-700">Let me analyze your symptoms...</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-16 sm:py-24 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12 sm:mb-16">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              Powerful Features for Your Health
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto">
+              Everything you need to manage your health in one intelligent platform
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+            {features.map((feature, index) => (
+              <Card
+                key={index}
+                className="p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-white"
+              >
+                <div className={`flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-r ${feature.color} text-white shadow-lg mb-4`}>
+                  <feature.icon className="h-7 w-7" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">{feature.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-16 sm:py-24">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="space-y-6">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900">
+                About SymptomAI
+              </h2>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                SymptomAI is an advanced AI-powered health assistant designed to help you understand 
+                your symptoms and make informed decisions about your health. Our platform combines 
+                cutting-edge artificial intelligence with comprehensive medical knowledge to provide 
+                accurate, personalized health insights.
+              </p>
+              <p className="text-lg text-gray-600 leading-relaxed">
+                We believe that everyone deserves access to quality healthcare information. That's 
+                why we've created a platform that's easy to use, available 24/7, and completely 
+                private. Whether you're experiencing new symptoms or managing a chronic condition, 
+                SymptomAI is here to support your health journey.
+              </p>
+
+              <div className="space-y-3 pt-4">
+                {benefits.map((benefit, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0" />
+                    <span className="text-gray-700">{benefit}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 shadow-xl">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-4 bg-white rounded-xl p-4 shadow-md">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500">
+                      <Users className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">Trusted by Thousands</div>
+                      <div className="text-sm text-gray-600">Users worldwide</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 bg-white rounded-xl p-4 shadow-md">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500">
+                      <Shield className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">100% Secure</div>
+                      <div className="text-sm text-gray-600">Your data is protected</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 bg-white rounded-xl p-4 shadow-md">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-violet-500">
+                      <Sparkles className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-gray-900">AI-Powered</div>
+                      <div className="text-sm text-gray-600">Advanced technology</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-16 sm:py-24 bg-gradient-to-r from-blue-500 to-cyan-500">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+            Ready to Take Control of Your Health?
+          </h2>
+          <p className="text-lg sm:text-xl text-blue-50 mb-8 max-w-2xl mx-auto">
+            Join thousands of users who trust SymptomAI for their health insights. 
+            Get started today and experience the future of healthcare.
+          </p>
+          {isAuthenticated ? (
+            <Link href="/dashboard">
+              <Button className="bg-white text-green-600 hover:bg-gray-100 px-8 py-6 rounded-full shadow-lg text-lg font-semibold">
+                Go to Dashboard
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/login">
+              <Button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 rounded-full shadow-lg text-lg font-semibold">
+                Get Started Now
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+            </Link>
+          )}
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="py-16 sm:py-24 bg-gray-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-4">
+              Get in Touch
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600">
+              Have questions? We're here to help
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <Card className="p-6 text-center hover:shadow-xl transition-all">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white mx-auto mb-4">
+                <Phone className="h-7 w-7" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Phone</h3>
+              <p className="text-gray-600">+250 788 123 456</p>
+            </Card>
+
+            <Card className="p-6 text-center hover:shadow-xl transition-all">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white mx-auto mb-4">
+                <Mail className="h-7 w-7" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Email</h3>
+              <p className="text-gray-600">support@symptomai.com</p>
+            </Card>
+
+            <Card className="p-6 text-center hover:shadow-xl transition-all">
+              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white mx-auto mb-4">
+                <MapPin className="h-7 w-7" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-2">Location</h3>
+              <p className="text-gray-600">Kigali, Rwanda</p>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-gray-900 text-white py-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500">
+                  <Bot className="h-6 w-6 text-white" />
+                </div>
+                <span className="text-xl font-bold">SymptomAI</span>
+              </div>
+              <p className="text-gray-400">
+                Your intelligent health companion, powered by AI.
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Quick Links</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#home" className="hover:text-white transition">Home</a></li>
+                <li><a href="#features" className="hover:text-white transition">Features</a></li>
+                <li><a href="#about" className="hover:text-white transition">About</a></li>
+                <li><a href="#contact" className="hover:text-white transition">Contact</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Legal</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-white transition">Disclaimer</a></li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Emergency</h4>
+              <ul className="space-y-2 text-gray-400">
+                <li>Emergency: 116</li>
+                <li>Medical: 114</li>
+                <li>GBV Support: 3029</li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
+            <p>&copy; 2026 SymptomAI. All rights reserved.</p>
+            <p className="mt-2 text-sm">
+              ⚠️ This is for informational purposes only. Always consult healthcare professionals for medical advice.
+            </p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

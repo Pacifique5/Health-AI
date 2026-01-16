@@ -29,6 +29,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import SettingsModal from "@/components/SettingsModal";
+import QuickActionModal from "@/components/QuickActionModals";
 
 interface ChatMessage {
   id: string;
@@ -117,6 +118,8 @@ export default function DashboardPage() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [userInfo, setUserInfo] = useState<{username: string, email: string} | null>(null);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [showQuickActionModal, setShowQuickActionModal] = useState(false);
+  const [quickActionType, setQuickActionType] = useState<"symptoms" | "heart" | "preventive" | "medication">("symptoms");
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -294,7 +297,10 @@ export default function DashboardPage() {
     }
     localStorage.removeItem("authToken");
     localStorage.removeItem("userId");
-    window.location.href = "/login";
+    localStorage.removeItem("userInfo");
+    
+    // Redirect to landing page instead of login
+    window.location.href = "/";
   };
 
   const handleDownloadApp = () => {
@@ -352,6 +358,54 @@ We typically respond within 24 hours during business days.
 
   const handleUserInfoUpdate = (newUserInfo: { username: string; email: string }) => {
     setUserInfo(newUserInfo);
+  };
+
+  const handleQuickAction = (actionText: string) => {
+    const actionMap: { [key: string]: "symptoms" | "heart" | "preventive" | "medication" } = {
+      "Check symptoms": "symptoms",
+      "Heart health": "heart",
+      "Preventive care": "preventive",
+      "Medication reminder": "medication",
+    };
+    
+    const actionType = actionMap[actionText];
+    if (actionType) {
+      setQuickActionType(actionType);
+      setShowQuickActionModal(true);
+    }
+  };
+
+  const handleQuickActionSubmit = async (data: any) => {
+    // Create a formatted message based on the action type
+    let message = "";
+    
+    switch (quickActionType) {
+      case "symptoms":
+        message = `I'm experiencing the following symptoms: ${data.symptoms}`;
+        if (data.duration) message += `\nDuration: ${data.duration}`;
+        if (data.severity) message += `\nSeverity: ${data.severity}`;
+        break;
+      case "heart":
+        message = `I have heart health concerns: ${data.concerns}`;
+        if (data.age) message += `\nAge: ${data.age}`;
+        if (data.bloodPressure) message += `\nBlood Pressure: ${data.bloodPressure}`;
+        if (data.riskFactors?.length) message += `\nRisk Factors: ${data.riskFactors.join(", ")}`;
+        break;
+      case "preventive":
+        message = `I'm interested in preventive care for: ${data.careType}`;
+        if (data.ageGroup) message += `\nAge Group: ${data.ageGroup}`;
+        if (data.goals) message += `\nHealth Goals: ${data.goals}`;
+        break;
+      case "medication":
+        message = `I need a medication reminder for: ${data.medicationName} (${data.dosage})`;
+        if (data.frequency) message += `\nFrequency: ${data.frequency}`;
+        if (data.reminderTimes?.length) message += `\nReminder Times: ${data.reminderTimes.join(", ")}`;
+        if (data.instructions) message += `\nInstructions: ${data.instructions}`;
+        break;
+    }
+    
+    // Send the formatted message
+    await sendMessage(message);
   };
 
   if (!isAuth) return null;
@@ -512,7 +566,7 @@ We typically respond within 24 hours during business days.
                     <Card
                       key={action.text}
                       className="group cursor-pointer border-0 bg-white/60 p-4 backdrop-blur-sm transition hover:scale-105 hover:bg-white/80"
-                      onClick={() => void sendMessage(action.text)}
+                      onClick={() => handleQuickAction(action.text)}
                     >
                       <div
                         className={`mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r ${action.color} transition group-hover:scale-110`}
@@ -756,6 +810,14 @@ We typically respond within 24 hours during business days.
         onClose={() => setShowSettingsModal(false)}
         userInfo={userInfo}
         onUserInfoUpdate={handleUserInfoUpdate}
+      />
+
+      {/* Quick Action Modal */}
+      <QuickActionModal
+        isOpen={showQuickActionModal}
+        onClose={() => setShowQuickActionModal(false)}
+        actionType={quickActionType}
+        onSubmit={handleQuickActionSubmit}
       />
     </div>
   );
