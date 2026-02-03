@@ -30,6 +30,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import SettingsModal from "@/components/SettingsModal";
 import QuickActionModal from "@/components/QuickActionModals";
+import ThemeToggle from "@/components/ThemeToggle";
 
 interface ChatMessage {
   id: string;
@@ -412,7 +413,7 @@ We typically respond within 24 hours during business days.
 
   return (
     <div className="flex h-screen">
-      <aside className="relative flex w-64 flex-col border-r border-slate-200 bg-slate-950 px-4 py-6 text-white">
+      <aside className="relative flex w-64 flex-col border-r border-theme bg-slate-950 dark:bg-black px-4 py-6 text-white">
         <h2 className="mb-4 text-center text-lg font-semibold">All Conversations</h2>
         <button
           onClick={startNewConversation}
@@ -428,8 +429,8 @@ We typically respond within 24 hours during business days.
               onClick={() => selectConversation(conv.id)}
               className={`w-full rounded-lg border border-transparent px-3 py-2 text-left text-sm transition ${
                 conv.id === activeConversationId
-                  ? "border-emerald-300 bg-slate-800 font-semibold"
-                  : "bg-transparent hover:bg-slate-900/60"
+                  ? "border-emerald-300 bg-slate-800 dark:bg-gray-900 font-semibold"
+                  : "bg-transparent hover:bg-slate-900/60 dark:hover:bg-gray-800/60"
               }`}
               title={conv.title}
             >
@@ -439,10 +440,10 @@ We typically respond within 24 hours during business days.
         </div>
         
         {/* Profile Section with Dropdown */}
-        <div className="relative mt-4 border-t border-slate-700 pt-4" ref={profileDropdownRef}>
+        <div className="relative mt-4 border-t border-slate-700 dark:border-gray-600 pt-4" ref={profileDropdownRef}>
           <button
             onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-            className="flex w-full items-center justify-between rounded-lg bg-slate-800 p-3 transition hover:bg-slate-700"
+            className="flex w-full items-center justify-between rounded-lg bg-slate-800 dark:bg-gray-900 p-3 transition hover:bg-slate-700 dark:hover:bg-gray-800"
           >
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
@@ -464,14 +465,14 @@ We typically respond within 24 hours during business days.
 
           {/* Profile Dropdown Menu */}
           {showProfileDropdown && (
-            <div className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-slate-800 border border-slate-600 shadow-xl animate-in slide-in-from-bottom-2 duration-200">
+            <div className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-slate-800 dark:bg-gray-900 border border-slate-600 dark:border-gray-700 shadow-xl animate-in slide-in-from-bottom-2 duration-200">
               <div className="p-2 space-y-1">
                 <button
                   onClick={() => {
                     handleDownloadApp();
                     setShowProfileDropdown(false);
                   }}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-white transition hover:bg-slate-700"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-white transition hover:bg-slate-700 dark:hover:bg-gray-800"
                 >
                   <Download className="h-4 w-4" />
                   Download mobile App
@@ -481,7 +482,7 @@ We typically respond within 24 hours during business days.
                     handleSettings();
                     setShowProfileDropdown(false);
                   }}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-white transition hover:bg-slate-700"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-white transition hover:bg-slate-700 dark:hover:bg-gray-800"
                 >
                   <Settings className="h-4 w-4" />
                   Settings
@@ -491,18 +492,18 @@ We typically respond within 24 hours during business days.
                     handleContactUs();
                     setShowProfileDropdown(false);
                   }}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-white transition hover:bg-slate-700"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-white transition hover:bg-slate-700 dark:hover:bg-gray-800"
                 >
                   <Mail className="h-4 w-4" />
                   Contact us
                 </button>
-                <div className="border-t border-slate-600 my-1"></div>
+                <div className="border-t border-slate-600 dark:border-gray-700 my-1"></div>
                 <button
                   onClick={() => {
                     handleLogout();
                     setShowProfileDropdown(false);
                   }}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-400 transition hover:bg-slate-700 hover:text-red-300"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-red-400 transition hover:bg-slate-700 dark:hover:bg-gray-800 hover:text-red-300"
                 >
                   <LogOut className="h-4 w-4" />
                   Log out
@@ -513,13 +514,13 @@ We typically respond within 24 hours during business days.
         </div>
       </aside>
 
-      <main className="relative flex-1 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+      <main className="relative flex-1 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 blur-3xl" />
         <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-br from-green-400/20 to-emerald-400/20 blur-3xl" />
         <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-purple-400/10 to-pink-400/10 blur-3xl" />
 
         <div className="relative z-10 mx-auto flex h-full max-w-4xl flex-col">
-          <header className="border-b border-white/20 bg-white/10 p-6 backdrop-blur-sm">
+          <header className="border-b border-white/20 dark:border-gray-700/20 bg-white/10 dark:bg-gray-800/10 p-6 backdrop-blur-sm">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className="relative">
@@ -532,10 +533,11 @@ We typically respond within 24 hours during business days.
                   <h1 className="text-2xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text">
                     SymptomAI
                   </h1>
-                  <p className="text-sm text-slate-600">Your Smart Health Assistant</p>
+                  <p className="text-sm text-theme-secondary">Your Smart Health Assistant</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
+                <ThemeToggle />
                 <Button
                   onClick={() => setShowEmergency(true)}
                   className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white shadow-lg transition hover:from-red-600 hover:to-red-700"
@@ -545,7 +547,7 @@ We typically respond within 24 hours during business days.
                 </Button>
                 <div className="flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-yellow-500 animate-pulse" />
-                  <span className="text-sm font-medium text-slate-700">FIQUE&apos;S-AI</span>
+                  <span className="text-sm font-medium text-theme-secondary">FIQUE&apos;S-AI</span>
                 </div>
               </div>
             </div>
@@ -557,15 +559,15 @@ We typically respond within 24 hours during business days.
                 <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-xl">
                   <MessageCircle className="h-10 w-10 text-white" />
                 </div>
-                <h2 className="mb-3 text-2xl font-bold text-slate-800">Welcome to SymptomAI</h2>
-                <p className="mb-8 text-slate-600">
+                <h2 className="mb-3 text-2xl font-bold text-theme-primary">Welcome to SymptomAI</h2>
+                <p className="mb-8 text-theme-secondary">
                   I&apos;m here to help you understand your symptoms and provide health guidance. How can I assist you today?
                 </p>
                 <div className="grid grid-cols-2 gap-4">
                   {quickActions.map((action) => (
                     <Card
                       key={action.text}
-                      className="group cursor-pointer border-0 bg-white/60 p-4 backdrop-blur-sm transition hover:scale-105 hover:bg-white/80"
+                      className="group cursor-pointer border-0 bg-white/60 dark:bg-gray-800/60 p-4 backdrop-blur-sm transition hover:scale-105 hover:bg-white/80 dark:hover:bg-gray-800/80"
                       onClick={() => handleQuickAction(action.text)}
                     >
                       <div
@@ -573,7 +575,7 @@ We typically respond within 24 hours during business days.
                       >
                         <action.icon className="h-4 w-4 text-white" />
                       </div>
-                      <p className="text-sm font-medium text-slate-700">{action.text}</p>
+                      <p className="text-sm font-medium text-theme-secondary">{action.text}</p>
                     </Card>
                   ))}
                 </div>
@@ -603,12 +605,12 @@ We typically respond within 24 hours during business days.
                         className={`inline-block max-w-lg rounded-2xl p-4 shadow-lg backdrop-blur-sm ${
                           message.role === "user"
                             ? "bg-gradient-to-br from-indigo-500 to-purple-500 text-white"
-                            : "border border-white/20 bg-white/80 text-slate-800"
+                            : "border border-white/20 dark:border-gray-700/20 bg-white/80 dark:bg-gray-800/80 text-theme-primary"
                         }`}
                       >
                         <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
                       </div>
-                      <p className="mt-2 text-xs text-slate-500">
+                      <p className="mt-2 text-xs text-theme-muted">
                         {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                       </p>
                     </div>
@@ -622,11 +624,11 @@ We typically respond within 24 hours during business days.
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
                   <Bot className="h-5 w-5 text-white" />
                 </div>
-                <div className="rounded-2xl border border-white/20 bg-white/80 p-4 shadow-lg backdrop-blur-sm">
+                <div className="rounded-2xl border border-white/20 dark:border-gray-700/20 bg-white/80 dark:bg-gray-800/80 p-4 shadow-lg backdrop-blur-sm">
                   <div className="flex gap-1">
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400" />
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:150ms]" />
-                    <span className="h-2 w-2 animate-bounce rounded-full bg-slate-400 [animation-delay:300ms]" />
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-theme-muted" />
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-theme-muted [animation-delay:150ms]" />
+                    <span className="h-2 w-2 animate-bounce rounded-full bg-theme-muted [animation-delay:300ms]" />
                   </div>
                 </div>
               </div>
@@ -635,14 +637,14 @@ We typically respond within 24 hours during business days.
             <div ref={messagesEndRef} />
           </section>
 
-          <footer className="border-t border-white/20 bg-white/10 p-6 backdrop-blur-sm">
+          <footer className="border-t border-white/20 dark:border-gray-700/20 bg-white/10 dark:bg-gray-800/10 p-6 backdrop-blur-sm">
             <form onSubmit={handleSubmit} className="flex gap-3">
               <div className="relative flex-1">
                 <Input
                   value={input}
                   onChange={(event) => setInput(event.target.value)}
                   placeholder="Describe your signs and symptoms ..."
-                  className="w-full rounded-2xl border-white/20 bg-white/80 py-3 pl-4 pr-12 text-slate-800 placeholder:text-slate-500 focus:border-transparent focus:ring-2 focus:ring-blue-500/40"
+                  className="w-full rounded-2xl border-white/20 dark:border-gray-700/20 bg-white/80 dark:bg-gray-800/80 py-3 pl-4 pr-12 text-theme-primary placeholder:text-theme-muted focus:border-transparent focus:ring-2 focus:ring-blue-500/40"
                   disabled={isLoading}
                 />
                 <Heart className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-red-400" />
@@ -655,7 +657,7 @@ We typically respond within 24 hours during business days.
                 <Send className="h-5 w-5" />
               </Button>
             </form>
-            <p className="mt-3 text-center text-xs text-slate-500">
+            <p className="mt-3 text-center text-xs text-theme-muted">
               ⚠️ This is for informational purposes only. Always consult healthcare professionals for medical advice.
             </p>
           </footer>
@@ -664,7 +666,7 @@ We typically respond within 24 hours during business days.
 
       {showEmergency && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white shadow-2xl">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-theme-card shadow-2xl">
             <div className="flex items-center justify-between rounded-t-3xl bg-gradient-to-r from-blue-500 to-cyan-600 p-6 text-white">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
@@ -685,8 +687,8 @@ We typically respond within 24 hours during business days.
               </Button>
             </div>
 
-            <div className="m-6 rounded-lg border-l-4 border-blue-500 bg-blue-50 p-4 text-blue-700">
-              <h3 className="font-semibold text-blue-800">When to Call Emergency Services</h3>
+            <div className="m-6 rounded-lg border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 p-4 text-blue-700 dark:text-blue-300">
+              <h3 className="font-semibold text-blue-800 dark:text-blue-200">When to Call Emergency Services</h3>
               <ul className="mt-2 space-y-1 text-sm">
                 <li>• Difficulty breathing or shortness of breath</li>
                 <li>• Chest pain or pressure</li>
@@ -721,18 +723,18 @@ We typically respond within 24 hours during business days.
                       </div>
                       <div>
                         <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-gray-800">{contact.name}</h3>
+                          <h3 className="font-semibold text-theme-primary">{contact.name}</h3>
                           {contact.urgent && (
-                            <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-600">
+                            <span className="rounded-full bg-red-100 dark:bg-red-900/30 px-2 py-1 text-xs font-medium text-red-600 dark:text-red-400">
                               URGENT
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-gray-600">{contact.description}</p>
-                        <p className="mt-1 font-mono text-lg font-bold text-gray-800">{contact.number}</p>
+                        <p className="text-sm text-theme-secondary">{contact.description}</p>
+                        <p className="mt-1 font-mono text-lg font-bold text-theme-primary">{contact.number}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                    <div className="flex items-center gap-2 text-sm text-theme-muted">00">
                       <Phone className="h-5 w-5" />
                       Tap to call
                     </div>
@@ -741,8 +743,8 @@ We typically respond within 24 hours during business days.
               ))}
             </div>
 
-            <div className="space-y-3 rounded-b-3xl bg-gray-50 p-6">
-              <h3 className="flex items-center gap-2 font-semibold text-gray-800">
+            <div className="space-y-3 rounded-b-3xl bg-theme-secondary p-6">
+              <h3 className="flex items-center gap-2 font-semibold text-theme-primary">
                 <MapPin className="h-5 w-5" />
                 Additional Resources
               </h3>
@@ -796,7 +798,7 @@ We typically respond within 24 hours during business days.
                   Urgent Care Locator
                 </Button>
               </div>
-              <div className="rounded-lg bg-blue-50 p-3 text-xs text-blue-700">
+              <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3 text-xs text-blue-700 dark:text-blue-300">
                 <strong>Note:</strong> These contacts are for Rwanda. International users should contact their local emergency services.
               </div>
             </div>

@@ -9,15 +9,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-slate-900 text-white hover:bg-slate-900/90 focus-visible:ring-slate-400 focus-visible:ring-offset-white",
+          "bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-900/90 dark:hover:bg-slate-100/90 focus-visible:ring-slate-400 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900",
         destructive:
-          "bg-red-500 text-white hover:bg-red-500/90 focus-visible:ring-red-400 focus-visible:ring-offset-white",
+          "bg-red-500 text-white hover:bg-red-500/90 focus-visible:ring-red-400 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900",
         outline:
-          "border border-slate-200 bg-transparent hover:bg-slate-100 focus-visible:ring-slate-400 focus-visible:ring-offset-white",
+          "border border-slate-200 dark:border-slate-700 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:ring-slate-400 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900",
         secondary:
-          "bg-slate-100 text-slate-900 hover:bg-slate-100/80 focus-visible:ring-slate-400 focus-visible:ring-offset-white",
-        ghost: "hover:bg-slate-100 hover:text-slate-900",
-        link: "text-slate-900 underline-offset-4 hover:underline",
+          "bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 focus-visible:ring-slate-400 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900",
+        ghost: "hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100",
+        link: "text-slate-900 dark:text-slate-100 underline-offset-4 hover:underline",
       },
       size: {
         default: "h-10 px-4 py-2",

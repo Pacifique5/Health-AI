@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Bot, Mail, Lock, User, ArrowRight, Eye, EyeOff, CheckCircle, Sparkles, Shield, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function SignupPage() {
   const [username, setUsername] = useState("");
@@ -99,10 +100,15 @@ export default function SignupPage() {
   const strength = passwordStrength(password);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl" />
+      
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center relative z-10">
         {/* Left Side - Branding */}
@@ -116,14 +122,14 @@ export default function SignupPage() {
             </span>
           </Link>
           
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+          <h1 className="text-4xl lg:text-5xl font-bold text-theme-primary leading-tight">
             Start Your Journey to
             <span className="block bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               Better Health
             </span>
           </h1>
           
-          <p className="text-lg text-gray-600 leading-relaxed">
+          <p className="text-lg text-theme-secondary leading-relaxed">
             Join thousands of users who trust SymptomAI for personalized health insights, 
             AI-powered symptom analysis, and 24/7 health support.
           </p>
@@ -133,22 +139,22 @@ export default function SignupPage() {
             <div className="flex items-start gap-3">
               <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="font-semibold text-gray-900">Free to use</div>
-                <div className="text-sm text-gray-600">No credit card required</div>
+                <div className="font-semibold text-theme-primary">Free to use</div>
+                <div className="text-sm text-theme-secondary">No credit card required</div>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="font-semibold text-gray-900">Instant access</div>
-                <div className="text-sm text-gray-600">Start using immediately after signup</div>
+                <div className="font-semibold text-theme-primary">Instant access</div>
+                <div className="text-sm text-theme-secondary">Start using immediately after signup</div>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0 mt-0.5" />
               <div>
-                <div className="font-semibold text-gray-900">Privacy first</div>
-                <div className="text-sm text-gray-600">Your health data stays private</div>
+                <div className="font-semibold text-theme-primary">Privacy first</div>
+                <div className="text-sm text-theme-secondary">Your health data stays private</div>
               </div>
             </div>
           </div>
@@ -156,7 +162,7 @@ export default function SignupPage() {
 
         {/* Right Side - Signup Form */}
         <div className="w-full">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-gray-100">
+          <div className="bg-theme-card rounded-3xl shadow-2xl p-8 sm:p-10 border border-theme">
             {/* Mobile Logo */}
             <Link href="/" className="lg:hidden flex items-center gap-2 mb-6 group">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg group-hover:scale-110 transition-transform">
@@ -168,13 +174,13 @@ export default function SignupPage() {
             </Link>
 
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h2>
-              <p className="text-gray-600">Start your health journey today</p>
+              <h2 className="text-3xl font-bold text-theme-primary mb-2">Create Account</h2>
+              <p className="text-theme-secondary">Start your health journey today</p>
             </div>
 
             {error && (
-              <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200">
-                <p className="text-sm text-red-600 font-medium">{error}</p>
+              <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                <p className="text-sm text-red-600 dark:text-red-400 font-medium">{error}</p>
               </div>
             )}
 

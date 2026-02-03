@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Bot, Mail, Lock, ArrowRight, Eye, EyeOff, Sparkles, Shield, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
@@ -75,10 +76,15 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Background Decorations */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl" />
+      
+      {/* Theme Toggle */}
+      <div className="absolute top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
       
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-8 items-center relative z-10">
         {/* Left Side - Branding */}
@@ -92,14 +98,14 @@ export default function LoginPage() {
             </span>
           </Link>
           
-          <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 leading-tight">
+          <h1 className="text-4xl lg:text-5xl font-bold text-theme-primary leading-tight">
             Welcome Back to Your
             <span className="block bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
               Health Journey
             </span>
           </h1>
           
-          <p className="text-lg text-gray-600 leading-relaxed">
+          <p className="text-lg text-theme-secondary leading-relaxed">
             Sign in to access your personalized health insights, track your symptoms, 
             and get AI-powered recommendations.
           </p>
@@ -111,8 +117,8 @@ export default function LoginPage() {
                 <Sparkles className="h-5 w-5" />
               </div>
               <div>
-                <div className="font-semibold text-gray-900">AI-Powered Analysis</div>
-                <div className="text-sm text-gray-600">Get instant health insights</div>
+                <div className="font-semibold text-theme-primary">AI-Powered Analysis</div>
+                <div className="text-sm text-theme-secondary">Get instant health insights</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -120,8 +126,8 @@ export default function LoginPage() {
                 <Shield className="h-5 w-5" />
               </div>
               <div>
-                <div className="font-semibold text-gray-900">100% Secure</div>
-                <div className="text-sm text-gray-600">Your data is protected</div>
+                <div className="font-semibold text-theme-primary">100% Secure</div>
+                <div className="text-sm text-theme-secondary">Your data is protected</div>
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -129,8 +135,8 @@ export default function LoginPage() {
                 <Heart className="h-5 w-5" />
               </div>
               <div>
-                <div className="font-semibold text-gray-900">24/7 Available</div>
-                <div className="text-sm text-gray-600">Always here to help</div>
+                <div className="font-semibold text-theme-primary">24/7 Available</div>
+                <div className="text-sm text-theme-secondary">Always here to help</div>
               </div>
             </div>
           </div>
@@ -138,7 +144,7 @@ export default function LoginPage() {
 
         {/* Right Side - Login Form */}
         <div className="w-full">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 sm:p-10 border border-gray-100">
+          <div className="bg-theme-card rounded-3xl shadow-2xl p-8 sm:p-10 border border-theme">
             {/* Mobile Logo */}
             <Link href="/" className="lg:hidden flex items-center gap-2 mb-6 group">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg group-hover:scale-110 transition-transform">
@@ -150,30 +156,30 @@ export default function LoginPage() {
             </Link>
 
             <div className="mb-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign In</h2>
-              <p className="text-gray-600">Welcome back! Please enter your details.</p>
+              <h2 className="text-3xl font-bold text-theme-primary mb-2">Sign In</h2>
+              <p className="text-theme-secondary">Welcome back! Please enter your details.</p>
             </div>
 
             {error && (
-              <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200">
-                <p className="text-sm text-red-600 font-medium">{error}</p>
+              <div className="mb-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
+                <p className="text-sm text-red-600 dark:text-red-400 font-medium">{error}</p>
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-theme-primary mb-2">
                   Email Address
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
+                    <Mail className="h-5 w-5 text-theme-muted" />
                   </div>
                   <input
                     type="email"
                     required
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full pl-12 pr-4 py-3 border border-theme rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none bg-theme-primary text-theme-primary"
                     placeholder="you@example.com"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
@@ -183,17 +189,17 @@ export default function LoginPage() {
 
               {/* Password Field */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-theme-primary mb-2">
                   Password
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                    <Lock className="h-5 w-5 text-gray-400" />
+                    <Lock className="h-5 w-5 text-theme-muted" />
                   </div>
                   <input
                     type={showPassword ? "text" : "password"}
                     required
-                    className="w-full pl-12 pr-12 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none"
+                    className="w-full pl-12 pr-12 py-3 border border-theme rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all outline-none bg-theme-primary text-theme-primary"
                     placeholder="Enter your password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -204,9 +210,9 @@ export default function LoginPage() {
                     className="absolute inset-y-0 right-0 pr-4 flex items-center"
                   >
                     {showPassword ? (
-                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      <EyeOff className="h-5 w-5 text-theme-muted hover:text-theme-secondary" />
                     ) : (
-                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                      <Eye className="h-5 w-5 text-theme-muted hover:text-theme-secondary" />
                     )}
                   </button>
                 </div>
@@ -217,9 +223,9 @@ export default function LoginPage() {
                 <label className="flex items-center">
                   <input
                     type="checkbox"
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    className="rounded border-theme text-blue-600 focus:ring-blue-500"
                   />
-                  <span className="ml-2 text-sm text-gray-600">Remember me</span>
+                  <span className="ml-2 text-sm text-theme-secondary">Remember me</span>
                 </label>
                 <a href="#" className="text-sm font-medium text-blue-600 hover:text-blue-700">
                   Forgot password?
@@ -249,16 +255,16 @@ export default function LoginPage() {
             {/* Divider */}
             <div className="relative my-8">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
+                <div className="w-full border-t border-theme"></div>
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white text-gray-500">New to SymptomAI?</span>
+                <span className="px-4 bg-theme-card text-theme-muted">New to SymptomAI?</span>
               </div>
             </div>
 
             {/* Sign Up Link */}
             <div className="text-center">
-              <p className="text-gray-600">
+              <p className="text-theme-secondary">
                 Don't have an account?{" "}
                 <Link href="/signup" className="font-semibold text-blue-600 hover:text-blue-700">
                   Create an account
@@ -268,7 +274,7 @@ export default function LoginPage() {
 
             {/* Back to Home */}
             <div className="mt-6 text-center">
-              <Link href="/" className="text-sm text-gray-500 hover:text-gray-700 inline-flex items-center gap-1">
+              <Link href="/" className="text-sm text-theme-muted hover:text-theme-secondary inline-flex items-center gap-1">
                 ← Back to home
               </Link>
             </div>
@@ -276,7 +282,7 @@ export default function LoginPage() {
 
           {/* Trust Badge */}
           <div className="mt-6 text-center">
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-theme-muted">
               🔒 Your data is secure and encrypted
             </p>
           </div>

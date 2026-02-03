@@ -34,20 +34,20 @@ export default function QuickActionModal({ isOpen, onClose, actionType, onSubmit
                 <Activity className="h-6 w-6" />
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-gray-800">Check Symptoms</h2>
-                <p className="text-sm text-gray-600">Tell us what you're experiencing</p>
+                <h2 className="text-2xl font-bold text-theme-primary">Check Symptoms</h2>
+                <p className="text-sm text-theme-secondary">Tell us what you're experiencing</p>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-theme-primary mb-2">
                   What symptoms are you experiencing? *
                 </label>
                 <textarea
                   required
                   rows={4}
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  className="w-full rounded-lg border border-theme px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-theme-primary text-theme-primary"
                   placeholder="e.g., headache, fever, cough, fatigue..."
                   value={formData.symptoms || ""}
                   onChange={(e) => setFormData({ ...formData, symptoms: e.target.value })}
@@ -55,11 +55,11 @@ export default function QuickActionModal({ isOpen, onClose, actionType, onSubmit
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-theme-primary mb-2">
                   How long have you had these symptoms?
                 </label>
                 <select
-                  className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
+                  className="w-full rounded-lg border border-theme px-3 py-2 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 bg-theme-primary text-theme-primary"
                   value={formData.duration || ""}
                   onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
                 >
@@ -467,14 +467,14 @@ export default function QuickActionModal({ isOpen, onClose, actionType, onSubmit
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-white shadow-2xl">
-        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between rounded-t-3xl">
+      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-theme-card shadow-2xl">
+        <div className="sticky top-0 bg-theme-card border-b border-theme px-6 py-4 flex items-center justify-between rounded-t-3xl">
           <div className="flex-1" />
           <Button
             onClick={onClose}
             variant="ghost"
             size="sm"
-            className="rounded-xl hover:bg-gray-100"
+            className="rounded-xl hover-theme"
           >
             <X className="h-5 w-5" />
           </Button>
