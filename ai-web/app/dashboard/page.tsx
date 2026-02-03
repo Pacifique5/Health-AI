@@ -734,7 +734,7 @@ We typically respond within 24 hours during business days.
                         <p className="mt-1 font-mono text-lg font-bold text-theme-primary">{contact.number}</p>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-theme-muted">00">
+                    <div className="flex items-center gap-2 text-sm text-theme-muted">
                       <Phone className="h-5 w-5" />
                       Tap to call
                     </div>
