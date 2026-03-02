@@ -121,7 +121,7 @@ export default function LandingPage() {
 
   const testimonials = [
     {
-      name: "Dr. Sarah Johnson",
+      name: "Dr.Kanimba Tressor",
       role: "Healthcare Professional",
       content: "SymptomAI has revolutionized preliminary health assessments. The accuracy and comprehensive treatment recommendations are impressive.",
       rating: 5,
@@ -129,7 +129,7 @@ export default function LandingPage() {
       color: "from-pink-500 to-rose-500",
     },
     {
-      name: "Michael Chen",
+      name: "Prof.Muneza Peter",
       role: "Regular User",
       content: "The AI helped me understand my symptoms better and guided me to seek the right medical care. The confidence scoring gives me peace of mind.",
       rating: 5,
@@ -137,7 +137,7 @@ export default function LandingPage() {
       color: "from-blue-500 to-cyan-500",
     },
     {
-      name: "Dr. Emily Rodriguez",
+      name: "Mr.Karekezi Rodriguez",
       role: "Medical Consultant",
       content: "An excellent tool for health awareness. The integration of symptom severity weights and treatment data is particularly well done.",
       rating: 5,
