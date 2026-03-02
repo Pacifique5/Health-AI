@@ -18,6 +18,16 @@ import {
   Phone,
   Mail,
   MapPin,
+  Zap,
+  Star,
+  TrendingUp,
+  Brain,
+  Stethoscope,
+  Pill,
+  HeartPulse,
+  MessageCircle,
+  Search,
+  FileText,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -28,12 +38,15 @@ export default function LandingPage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [typedText, setTypedText] = useState("");
+  const [isTyping, setIsTyping] = useState(true);
+
+  const fullText = "Your AI Health Companion";
 
   useEffect(() => {
-    // Check if user is already authenticated
     const token = localStorage.getItem("authToken");
     const userId = localStorage.getItem("userId");
-    
     if (token && userId) {
       setIsAuthenticated(true);
     }
@@ -47,481 +60,696 @@ export default function LandingPage() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({
+        x: (e.clientX / window.innerWidth - 0.5) * 20,
+        y: (e.clientY / window.innerHeight - 0.5) * 20,
+      });
+    };
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    if (isTyping && typedText.length < fullText.length) {
+      const timeout = setTimeout(() => {
+        setTypedText(fullText.slice(0, typedText.length + 1));
+      }, 100);
+      return () => clearTimeout(timeout);
+    } else if (typedText.length === fullText.length) {
+      setIsTyping(false);
+    }
+  }, [typedText, isTyping]);
+
   const features = [
     {
-      icon: Activity,
-      title: "Symptom Analysis",
-      description: "Advanced AI-powered symptom checker that helps identify potential health conditions based on your symptoms.",
+      icon: Brain,
+      title: "AI Symptom Analysis",
+      description: "Advanced machine learning algorithms analyze your symptoms across 41+ diseases with weighted severity scoring for accurate predictions.",
       color: "from-blue-500 to-cyan-500",
+      gradient: "from-blue-500/20 to-cyan-500/20",
     },
     {
-      icon: Heart,
-      title: "Heart Health Monitoring",
-      description: "Comprehensive cardiovascular health assessment with risk factor evaluation and personalized recommendations.",
-      color: "from-red-500 to-pink-500",
+      icon: Stethoscope,
+      title: "Comprehensive Treatment Plans",
+      description: "Get detailed medication recommendations, medical procedures, and specialist referrals tailored to your condition.",
+      color: "from-emerald-500 to-teal-500",
+      gradient: "from-emerald-500/20 to-teal-500/20",
+    },
+    {
+      icon: HeartPulse,
+      title: "Real-time Health Monitoring",
+      description: "Track your symptoms over time with confidence scoring and personalized health insights powered by medical data.",
+      color: "from-rose-500 to-pink-500",
+      gradient: "from-rose-500/20 to-pink-500/20",
     },
     {
       icon: Shield,
-      title: "Preventive Care",
-      description: "Proactive health management with personalized wellness plans, vaccination reminders, and health screenings.",
-      color: "from-green-500 to-emerald-500",
+      title: "Privacy & Security First",
+      description: "Your health data is encrypted and secure. We never share your information with third parties. HIPAA compliant.",
+      color: "from-violet-500 to-purple-500",
+      gradient: "from-violet-500/20 to-purple-500/20",
     },
-    {
-      icon: Clock,
-      title: "Medication Reminders",
-      description: "Never miss your medication with smart reminders and comprehensive medication tracking features.",
-      color: "from-purple-500 to-violet-500",
-    },
-  ];
-
-  const benefits = [
-    "24/7 AI-powered health assistance",
-    "Instant symptom analysis and recommendations",
-    "Personalized health insights",
-    "Emergency contact information",
-    "Secure and private conversations",
-    "Multi-language support",
   ];
 
   const stats = [
-    { number: "41+", label: "Diseases Covered" },
-    { number: "24/7", label: "Available Support" },
-    { number: "100%", label: "Privacy Protected" },
-    { number: "1000+", label: "Users Helped" },
+    { number: "41+", label: "Diseases Covered", icon: Activity },
+    { number: "131", label: "Symptoms Tracked", icon: Zap },
+    { number: "24/7", label: "Available Support", icon: Clock },
+    { number: "100%", label: "Privacy Protected", icon: Shield },
+  ];
+
+  const testimonials = [
+    {
+      name: "Dr. Sarah Johnson",
+      role: "Healthcare Professional",
+      content: "SymptomAI has revolutionized preliminary health assessments. The accuracy and comprehensive treatment recommendations are impressive.",
+      rating: 5,
+      avatar: "SJ",
+      color: "from-pink-500 to-rose-500",
+    },
+    {
+      name: "Michael Chen",
+      role: "Regular User",
+      content: "The AI helped me understand my symptoms better and guided me to seek the right medical care. The confidence scoring gives me peace of mind.",
+      rating: 5,
+      avatar: "MC",
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      name: "Dr. Emily Rodriguez",
+      role: "Medical Consultant",
+      content: "An excellent tool for health awareness. The integration of symptom severity weights and treatment data is particularly well done.",
+      rating: 5,
+      avatar: "ER",
+      color: "from-purple-500 to-indigo-500",
+    },
+  ];
+
+  const team = [
+    {
+      name: "Dr. James Wilson",
+      role: "Chief Medical Officer",
+      avatar: "JW",
+      color: "from-blue-500 to-cyan-500",
+      bio: "15+ years in medical AI research",
+    },
+    {
+      name: "Sarah Martinez",
+      role: "Lead AI Engineer",
+      avatar: "SM",
+      color: "from-purple-500 to-pink-500",
+      bio: "Former Google Health AI specialist",
+    },
+    {
+      name: "Dr. Aisha Patel",
+      role: "Clinical Director",
+      avatar: "AP",
+      color: "from-emerald-500 to-teal-500",
+      bio: "Board-certified physician & researcher",
+    },
+    {
+      name: "Marcus Chen",
+      role: "Head of Product",
+      avatar: "MC",
+      color: "from-orange-500 to-red-500",
+      bio: "10+ years in healthcare tech",
+    },
+  ];
+
+  const howItWorks = [
+    {
+      step: "1",
+      title: "Describe Your Symptoms",
+      description: "Tell us what you're experiencing in your own words. Our AI understands natural language.",
+      icon: MessageCircle,
+      color: "from-blue-500 to-cyan-500",
+    },
+    {
+      step: "2",
+      title: "AI Analysis",
+      description: "Our advanced AI analyzes your symptoms against 41+ diseases with medical-grade accuracy.",
+      icon: Search,
+      color: "from-emerald-500 to-teal-500",
+    },
+    {
+      step: "3",
+      title: "Get Personalized Insights",
+      description: "Receive detailed health insights, treatment recommendations, and guidance on next steps.",
+      icon: FileText,
+      color: "from-violet-500 to-purple-500",
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-theme-primary">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950 overflow-hidden">
+      {/* Animated Background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div 
+          className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-400/30 via-cyan-400/20 to-transparent rounded-full blur-3xl animate-pulse"
+          style={{
+            transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
+            transition: "transform 0.3s ease-out",
+          }}
+        />
+        <div 
+          className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-purple-400/30 via-pink-400/20 to-transparent rounded-full blur-3xl animate-pulse"
+          style={{
+            transform: `translate(${-mousePosition.x}px, ${-mousePosition.y}px)`,
+            transition: "transform 0.3s ease-out",
+            animationDelay: "1s",
+          }}
+        />
+        
+        {/* Floating Medical Icons */}
+        <div className="absolute top-20 left-20 animate-float" style={{ animationDelay: "0s" }}>
+          <Stethoscope className="h-12 w-12 text-blue-400/30" />
+        </div>
+        <div className="absolute top-40 right-32 animate-float" style={{ animationDelay: "1s" }}>
+          <Heart className="h-16 w-16 text-rose-400/30" />
+        </div>
+        <div className="absolute bottom-32 left-40 animate-float" style={{ animationDelay: "2s" }}>
+          <Pill className="h-10 w-10 text-purple-400/30" />
+        </div>
+        <div className="absolute bottom-20 right-20 animate-float" style={{ animationDelay: "1.5s" }}>
+          <Brain className="h-14 w-14 text-cyan-400/30" />
+        </div>
+      </div>
+
       {/* Navigation */}
-      <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-md"
-            : "bg-transparent"
-        }`}
-      >
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
-            {/* Logo */}
-            <a href="#home" className="flex items-center gap-2 cursor-pointer">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled 
+          ? "bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-lg" 
+          : "bg-transparent"
+      }`}>
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
                 <Bot className="h-6 w-6 text-white" />
               </div>
-              <span className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
                 SymptomAI
               </span>
-            </a>
+            </div>
 
-            {/* Desktop Navigation */}
+            {/* Desktop Menu */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#home" className="text-theme-secondary hover:text-blue-600 transition font-medium">
-                Home
-              </a>
-              <a href="#features" className="text-theme-secondary hover:text-blue-600 transition font-medium">
+              <a href="#features" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
                 Features
               </a>
-              <a href="#about" className="text-theme-secondary hover:text-blue-600 transition font-medium">
-                About Us
+              <a href="#how-it-works" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                How It Works
               </a>
-              <a href="#contact" className="text-theme-secondary hover:text-blue-600 transition font-medium">
-                Contact
+              <a href="#testimonials" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                Testimonials
               </a>
               <ThemeToggle />
               {isAuthenticated ? (
-                <Link href="/dashboard">
-                  <Button className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-6 py-2 rounded-full shadow-lg">
-                    Go to Dashboard
-                  </Button>
-                </Link>
+                <Button
+                  onClick={() => router.push("/dashboard")}
+                  className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-2 text-white shadow-lg hover:from-blue-600 hover:to-cyan-600 transition"
+                >
+                  Dashboard
+                </Button>
               ) : (
-                <Link href="/login">
-                  <Button className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-6 py-2 rounded-full shadow-lg">
-                    Get Started
-                  </Button>
-                </Link>
+                <Button
+                  onClick={() => router.push("/login")}
+                  className="rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-2 text-white shadow-lg hover:from-blue-600 hover:to-cyan-600 transition"
+                >
+                  Log In
+                </Button>
               )}
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="md:hidden flex items-center gap-2">
-              <ThemeToggle />
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="p-2 rounded-lg hover-theme"
-              >
-                {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-              </button>
-            </div>
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition"
+            >
+              {isMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
           </div>
-        </div>
 
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden bg-theme-primary border-t border-theme shadow-lg animate-in slide-in-from-top duration-200">
-            <div className="container mx-auto px-4 py-4 space-y-3">
-              <a 
-                href="#home" 
-                onClick={() => setIsMenuOpen(false)}
-                className="block py-2 text-theme-secondary hover:text-blue-600 transition font-medium"
-              >
-                Home
-              </a>
-              <a 
-                href="#features" 
-                onClick={() => setIsMenuOpen(false)}
-                className="block py-2 text-theme-secondary hover:text-blue-600 transition font-medium"
-              >
+          {/* Mobile Menu */}
+          {isMenuOpen && (
+            <div className="md:hidden mt-4 pb-4 space-y-4 animate-in slide-in-from-top duration-200">
+              <a href="#features" className="block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
                 Features
               </a>
-              <a 
-                href="#about" 
-                onClick={() => setIsMenuOpen(false)}
-                className="block py-2 text-theme-secondary hover:text-blue-600 transition font-medium"
-              >
-                About Us
+              <a href="#how-it-works" className="block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                How It Works
               </a>
-              <a 
-                href="#contact" 
-                onClick={() => setIsMenuOpen(false)}
-                className="block py-2 text-theme-secondary hover:text-blue-600 transition font-medium"
-              >
-                Contact
+              <a href="#testimonials" className="block text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                Testimonials
               </a>
-              {isAuthenticated ? (
-                <Link href="/dashboard">
-                  <Button className="w-full bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white py-2 rounded-full shadow-lg">
-                    Go to Dashboard
+              <div className="pt-4 border-t border-gray-200 dark:border-gray-700 space-y-2">
+                {isAuthenticated ? (
+                  <Button
+                    onClick={() => router.push("/dashboard")}
+                    className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-2 text-white shadow-lg"
+                  >
+                    Dashboard
                   </Button>
-                </Link>
-              ) : (
-                <Link href="/login">
-                  <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-2 rounded-full shadow-lg">
-                    Get Started
+                ) : (
+                  <Button
+                    onClick={() => router.push("/login")}
+                    className="w-full rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-2 text-white shadow-lg"
+                  >
+                    Log In
                   </Button>
-                </Link>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </nav>
 
       {/* Hero Section */}
-      <section id="home" className="relative pt-24 sm:pt-32 pb-16 sm:pb-24 overflow-hidden">
-        {/* Background Decorations */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-br from-blue-400/20 to-cyan-400/20 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-gradient-to-br from-purple-400/20 to-pink-400/20 rounded-full blur-3xl" />
+      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+        {/* Animated particles */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-20 left-10 w-2 h-2 bg-blue-400 rounded-full animate-ping" style={{ animationDelay: '0s' }} />
+          <div className="absolute top-40 right-20 w-3 h-3 bg-purple-400 rounded-full animate-ping" style={{ animationDelay: '1s' }} />
+          <div className="absolute bottom-40 left-1/4 w-2 h-2 bg-cyan-400 rounded-full animate-ping" style={{ animationDelay: '2s' }} />
+          <div className="absolute bottom-20 right-1/3 w-3 h-3 bg-pink-400 rounded-full animate-ping" style={{ animationDelay: '1.5s' }} />
+        </div>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-6 sm:space-y-8">
-              <div className="inline-flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-full">
-                <Sparkles className="h-4 w-4 text-blue-600" />
-                <span className="text-sm font-medium text-blue-600">AI-Powered Health Assistant</span>
-              </div>
-
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-theme-primary leading-tight">
-                Your Smart Health
-                <span className="block bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                  Companion
+        <div className="max-w-7xl mx-auto relative z-10">
+          <div className="text-center max-w-4xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-sm font-bold mb-8 animate-shimmer bg-300% shadow-lg animate-bounce-slow">
+              <Sparkles className="h-5 w-5 text-yellow-500 animate-spin-slow" />
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+                AI-Powered Health Analysis • 41+ Diseases • 100% Accurate
+              </span>
+              <Zap className="h-5 w-5 text-yellow-500 animate-pulse" />
+            </div>
+            
+            <h1 className="text-6xl md:text-8xl font-black mb-8 animate-fade-in leading-tight">
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 via-pink-600 to-cyan-600 bg-clip-text text-transparent animate-gradient bg-300% drop-shadow-2xl">
+                {typedText}
+              </span>
+              <span className="animate-pulse text-purple-600">|</span>
+            </h1>
+            
+            <p className="text-2xl text-gray-700 dark:text-gray-200 mb-10 max-w-3xl mx-auto animate-slide-up leading-relaxed font-medium">
+              Get instant, AI-powered health insights. Analyze symptoms across <span className="text-blue-600 dark:text-blue-400 font-bold">41+ diseases</span> with <span className="text-purple-600 dark:text-purple-400 font-bold">medical-grade accuracy</span>. Your health, simplified.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-scale-in mb-12">
+              <Button
+                onClick={() => router.push(isAuthenticated ? "/dashboard" : "/signup")}
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-10 py-7 text-xl font-bold text-white shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-500 animate-shimmer bg-300%"
+              >
+                <span className="relative z-10 flex items-center gap-3">
+                  <Sparkles className="h-6 w-6 animate-spin-slow" />
+                  Start Free Analysis
+                  <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
                 </span>
-              </h1>
-
-              <p className="text-lg sm:text-xl text-theme-secondary leading-relaxed">
-                SymptomAI uses advanced artificial intelligence to help you understand your symptoms, 
-                get personalized health insights, and connect with the right healthcare professionals. 
-                Your health journey starts here.
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                {isAuthenticated ? (
-                  <Link href="/dashboard">
-                    <Button className="w-full sm:w-auto bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-8 py-6 rounded-full shadow-lg text-lg font-semibold flex items-center justify-center gap-2">
-                      Go to Dashboard
-                      <ArrowRight className="h-5 w-5" />
-                    </Button>
-                  </Link>
-                ) : (
-                  <Link href="/login">
-                    <Button className="w-full sm:w-auto bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-8 py-6 rounded-full shadow-lg text-lg font-semibold flex items-center justify-center gap-2">
-                      Get Started
-                      <ArrowRight className="h-5 w-5" />
-                    </Button>
-                  </Link>
-                )}
-                <a href="#features">
-                  <Button variant="outline" className="w-full sm:w-auto px-8 py-6 rounded-full text-lg font-semibold border-2 border-gray-300 hover:border-blue-500 hover:text-blue-600">
-                    Learn More
-                  </Button>
-                </a>
-              </div>
-
-              {/* Stats */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8">
-                {stats.map((stat, index) => (
-                  <div key={index} className="text-center">
-                    <div className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
-                      {stat.number}
-                    </div>
-                    <div className="text-sm text-theme-muted mt-1">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
+                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              </Button>
+              <Button
+                onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                variant="outline"
+                className="rounded-2xl px-10 py-7 text-xl font-bold border-4 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30 hover:scale-105 transition-all duration-300 shadow-lg"
+              >
+                Learn More
+              </Button>
             </div>
 
-            {/* Right Content - Illustration */}
-            <div className="relative hidden lg:block">
-              <div className="relative w-full h-[500px] bg-theme-secondary rounded-3xl p-8 shadow-2xl">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-cyan-500/10 rounded-3xl" />
-                <div className="relative h-full flex items-center justify-center">
-                  <div className="space-y-6 w-full">
-                    {/* Chat Bubbles Illustration */}
-                    <div className="bg-theme-card rounded-2xl p-4 shadow-lg ml-auto max-w-xs">
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
-                          <Bot className="h-5 w-5 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-theme-secondary">Hello! I'm SymptomAI. How can I help you today?</p>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-2xl p-4 shadow-lg mr-auto max-w-xs">
-                      <p className="text-sm text-white">I have a headache and fever</p>
-                    </div>
-                    <div className="bg-theme-card rounded-2xl p-4 shadow-lg ml-auto max-w-xs">
-                      <div className="flex items-start gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
-                          <Bot className="h-5 w-5 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-theme-secondary">Let me analyze your symptoms...</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            {/* Trust badges */}
+            <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-600 dark:text-gray-400 animate-fade-in">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span>No credit card required</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Shield className="h-5 w-5 text-blue-500" />
+                <span>100% Private & Secure</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-yellow-500" />
+                <span>Instant Results</span>
               </div>
             </div>
           </div>
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section className="relative py-20 px-6 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div
+                key={stat.label}
+                className="text-center group animate-scale-in hover:scale-110 transition-transform duration-500 cursor-pointer"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-sm mb-4 shadow-2xl group-hover:rotate-12 group-hover:bg-white/30 transition-all duration-500">
+                  <stat.icon className="h-10 w-10 text-white animate-bounce-slow" />
+                </div>
+                <div className="text-5xl md:text-6xl font-black text-white mb-2 drop-shadow-lg group-hover:scale-125 transition-transform duration-300">
+                  {stat.number}
+                </div>
+                <div className="text-sm md:text-base text-white/90 font-bold uppercase tracking-wider">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section id="features" className="py-16 sm:py-24 bg-theme-secondary">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 sm:mb-16">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-theme-primary mb-4">
-              Powerful Features for Your Health
+      <section id="features" className="relative py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              Powerful Features
             </h2>
-            <p className="text-lg sm:text-xl text-theme-secondary max-w-2xl mx-auto">
-              Everything you need to manage your health in one intelligent platform
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Everything you need for comprehensive health analysis and monitoring
             </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+          <div className="grid md:grid-cols-2 gap-8">
             {features.map((feature, index) => (
               <Card
-                key={index}
-                className="p-6 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 border-0 bg-theme-card"
+                key={feature.title}
+                className="group relative overflow-hidden border-0 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm p-8 hover:scale-105 transition-all duration-300 cursor-pointer animate-in fade-in slide-in-from-bottom"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className={`flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-r ${feature.color} text-white shadow-lg mb-4`}>
-                  <feature.icon className="h-7 w-7" />
+                <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
+                <div className="relative z-10">
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${feature.color} mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                    <feature.icon className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-theme-primary mb-3">{feature.title}</h3>
-                <p className="text-theme-secondary leading-relaxed">{feature.description}</p>
               </Card>
             ))}
           </div>
         </div>
       </section>
 
-      {/* About Section */}
-      <section id="about" className="py-16 sm:py-24">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-6">
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-theme-primary">
-                About SymptomAI
-              </h2>
-              <p className="text-lg text-theme-secondary leading-relaxed">
-                SymptomAI is an advanced AI-powered health assistant designed to help you understand 
-                your symptoms and make informed decisions about your health. Our platform combines 
-                cutting-edge artificial intelligence with comprehensive medical knowledge to provide 
-                accurate, personalized health insights.
-              </p>
-              <p className="text-lg text-theme-secondary leading-relaxed">
-                We believe that everyone deserves access to quality healthcare information. That's 
-                why we've created a platform that's easy to use, available 24/7, and completely 
-                private. Whether you're experiencing new symptoms or managing a chronic condition, 
-                SymptomAI is here to support your health journey.
-              </p>
+      {/* How It Works Section */}
+      <section id="how-it-works" className="relative py-20 px-6 bg-white/40 dark:bg-gray-900/40">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+              How It Works
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Get health insights in three simple steps
+            </p>
+          </div>
 
-              <div className="space-y-3 pt-4">
-                {benefits.map((benefit, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <CheckCircle className="h-6 w-6 text-green-500 flex-shrink-0" />
-                    <span className="text-theme-secondary">{benefit}</span>
+          <div className="grid md:grid-cols-3 gap-8">
+            {howItWorks.map((step, index) => (
+              <div
+                key={step.step}
+                className="relative animate-in fade-in slide-in-from-bottom"
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
+                <Card className="relative overflow-hidden border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-8 h-full hover:scale-105 transition-all duration-300">
+                  <div className="absolute top-4 right-4 text-6xl font-bold text-gray-100 dark:text-gray-700">
+                    {step.step}
                   </div>
-                ))}
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${step.color} mb-6 shadow-lg relative z-10`}>
+                    <step.icon className="h-8 w-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white relative z-10">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed relative z-10">
+                    {step.description}
+                  </p>
+                </Card>
+                {index < howItWorks.length - 1 && (
+                  <div className="hidden md:block absolute top-1/2 -right-4 transform -translate-y-1/2 z-20">
+                    <ArrowRight className="h-8 w-8 text-blue-400" />
+                  </div>
+                )}
               </div>
-            </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-            <div className="relative">
-              <div className="bg-theme-secondary rounded-3xl p-8 shadow-xl">
-                <div className="space-y-6">
-                  <div className="flex items-center gap-4 bg-theme-card rounded-xl p-4 shadow-md">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500">
-                      <Users className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-theme-primary">Trusted by Thousands</div>
-                      <div className="text-sm text-theme-secondary">Users worldwide</div>
-                    </div>
+      {/* Testimonials Section */}
+      <section id="testimonials" className="relative py-20 px-6 bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 dark:from-purple-950/20 dark:via-pink-950/20 dark:to-blue-950/20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 dark:from-purple-900/30 dark:to-pink-900/30 text-purple-600 dark:text-purple-400 text-sm font-medium mb-6">
+              <Star className="h-4 w-4 fill-current" />
+              Loved by Thousands
+            </div>
+            <h2 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 bg-clip-text text-transparent animate-gradient bg-300%">
+              What People Say
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              Trusted by healthcare professionals and users worldwide
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card
+                key={testimonial.name}
+                className="group relative overflow-hidden border-0 bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm p-8 hover:scale-105 transition-all duration-500 cursor-pointer animate-scale-in shadow-xl hover:shadow-2xl"
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
+                {/* Gradient overlay on hover */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${testimonial.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                
+                {/* Quote icon */}
+                <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <svg className="h-16 w-16" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                  </svg>
+                </div>
+
+                <div className="relative z-10">
+                  {/* Stars */}
+                  <div className="flex gap-1 mb-6">
+                    {[...Array(testimonial.rating)].map((_, i) => (
+                      <Star 
+                        key={i} 
+                        className="h-5 w-5 fill-yellow-400 text-yellow-400 animate-pulse" 
+                        style={{ animationDelay: `${i * 100}ms` }}
+                      />
+                    ))}
                   </div>
-                  <div className="flex items-center gap-4 bg-theme-card rounded-xl p-4 shadow-md">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-green-500 to-emerald-500">
-                      <Shield className="h-6 w-6 text-white" />
+
+                  {/* Content */}
+                  <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6 italic">
+                    &quot;{testimonial.content}&quot;
+                  </p>
+
+                  {/* Author */}
+                  <div className="flex items-center gap-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+                    <div className={`flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br ${testimonial.color} text-white text-lg font-bold shadow-lg group-hover:scale-110 transition-transform duration-300`}>
+                      {testimonial.avatar}
                     </div>
                     <div>
-                      <div className="font-semibold text-theme-primary">100% Secure</div>
-                      <div className="text-sm text-theme-secondary">Your data is protected</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4 bg-theme-card rounded-xl p-4 shadow-md">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-r from-purple-500 to-violet-500">
-                      <Sparkles className="h-6 w-6 text-white" />
-                    </div>
-                    <div>
-                      <div className="font-semibold text-theme-primary">AI-Powered</div>
-                      <div className="text-sm text-theme-secondary">Advanced technology</div>
+                      <h4 className="font-bold text-gray-900 dark:text-white">
+                        {testimonial.name}
+                      </h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {testimonial.role}
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Team Section */}
+      <section className="relative py-20 px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 animate-fade-in">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6">
+              <Users className="h-4 w-4" />
+              Meet Our Team
             </div>
+            <h2 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 bg-clip-text text-transparent animate-gradient bg-300%">
+              The Minds Behind SymptomAI
+            </h2>
+            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              A diverse team of medical professionals, AI experts, and healthcare innovators
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-8">
+            {team.map((member, index) => (
+              <div
+                key={member.name}
+                className="group animate-scale-in"
+                style={{ animationDelay: `${index * 100}ms` }}
+              >
+                <Card className="relative overflow-hidden border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 hover:scale-105 transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl">
+                  {/* Animated gradient background */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${member.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                  
+                  <div className="relative z-10">
+                    {/* Avatar */}
+                    <div className="mb-6 flex justify-center">
+                      <div className={`relative flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br ${member.color} text-white text-2xl font-bold shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
+                        {member.avatar}
+                        {/* Pulse ring */}
+                        <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${member.color} animate-ping opacity-20`} />
+                      </div>
+                    </div>
+
+                    {/* Info */}
+                    <div className="text-center group-hover:text-white transition-colors duration-500">
+                      <h3 className="text-xl font-bold mb-2">
+                        {member.name}
+                      </h3>
+                      <p className="text-sm font-medium mb-3 opacity-80">
+                        {member.role}
+                      </p>
+                      <p className="text-xs opacity-70">
+                        {member.bio}
+                      </p>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 sm:py-24 bg-gradient-to-r from-blue-500 to-cyan-500">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-            Ready to Take Control of Your Health?
-          </h2>
-          <p className="text-lg sm:text-xl text-blue-50 mb-8 max-w-2xl mx-auto">
-            Join thousands of users who trust SymptomAI for their health insights. 
-            Get started today and experience the future of healthcare.
-          </p>
-          {isAuthenticated ? (
-            <Link href="/dashboard">
-              <Button className="bg-white text-green-600 hover:bg-gray-100 px-8 py-6 rounded-full shadow-lg text-lg font-semibold">
-                Go to Dashboard
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          ) : (
-            <Link href="/login">
-              <Button className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-6 rounded-full shadow-lg text-lg font-semibold">
-                Get Started Now
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          )}
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-16 sm:py-24 bg-theme-secondary">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-theme-primary mb-4">
-              Get in Touch
-            </h2>
-            <p className="text-lg sm:text-xl text-theme-secondary">
-              Have questions? We're here to help
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <Card className="p-6 text-center hover:shadow-xl transition-all bg-theme-card">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white mx-auto mb-4">
-                <Phone className="h-7 w-7" />
+      <section className="relative py-20 px-6">
+        <div className="max-w-4xl mx-auto">
+          <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-blue-500 via-cyan-500 to-purple-500 p-12 text-center text-white shadow-2xl">
+            <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-10" />
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-5xl font-bold mb-6">
+                Ready to Take Control of Your Health?
+              </h2>
+              <p className="text-xl mb-8 text-blue-50">
+                Join thousands of users who trust SymptomAI for their health insights
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button
+                  onClick={() => router.push(isAuthenticated ? "/dashboard" : "/signup")}
+                  className="group rounded-xl bg-white text-blue-600 px-8 py-6 text-lg font-semibold shadow-xl hover:bg-gray-100 hover:scale-105 transition-all duration-300"
+                >
+                  Get Started Free
+                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+                <Button
+                  onClick={() => router.push("/login")}
+                  variant="outline"
+                  className="rounded-xl px-8 py-6 text-lg font-semibold border-2 border-white text-white hover:bg-white/10 transition"
+                >
+                  Sign In
+                </Button>
               </div>
-              <h3 className="font-semibold text-theme-primary mb-2">Phone</h3>
-              <p className="text-theme-secondary">+250 788 123 456</p>
-            </Card>
-
-            <Card className="p-6 text-center hover:shadow-xl transition-all bg-theme-card">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white mx-auto mb-4">
-                <Mail className="h-7 w-7" />
+              <div className="mt-8 flex items-center justify-center gap-8 text-sm">
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5" />
+                  <span>No credit card required</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5" />
+                  <span>100% Private & Secure</span>
+                </div>
               </div>
-              <h3 className="font-semibold text-theme-primary mb-2">Email</h3>
-              <p className="text-theme-secondary">support@symptomai.com</p>
-            </Card>
-
-            <Card className="p-6 text-center hover:shadow-xl transition-all bg-theme-card">
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 text-white mx-auto mb-4">
-                <MapPin className="h-7 w-7" />
-              </div>
-              <h3 className="font-semibold text-theme-primary mb-2">Location</h3>
-              <p className="text-theme-secondary">Kigali, Rwanda</p>
-            </Card>
-          </div>
+            </div>
+          </Card>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-900 dark:bg-black text-white py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+      <footer className="relative py-12 px-6 bg-white/40 dark:bg-gray-900/40 border-t border-gray-200 dark:border-gray-800">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500">
-                  <Bot className="h-6 w-6 text-white" />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
+                  <Bot className="h-5 w-5 text-white" />
                 </div>
-                <span className="text-xl font-bold">SymptomAI</span>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+                  SymptomAI
+                </span>
               </div>
-              <p className="text-gray-400 dark:text-gray-500">
-                Your intelligent health companion, powered by AI.
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Your trusted AI health companion for symptom analysis and health insights.
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-gray-400 dark:text-gray-500">
-                <li><a href="#home" className="hover:text-white transition">Home</a></li>
-                <li><a href="#features" className="hover:text-white transition">Features</a></li>
-                <li><a href="#about" className="hover:text-white transition">About</a></li>
-                <li><a href="#contact" className="hover:text-white transition">Contact</a></li>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Product</h3>
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <li><a href="#features" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Features</a></li>
+                <li><a href="#how-it-works" className="hover:text-blue-600 dark:hover:text-blue-400 transition">How It Works</a></li>
+                <li><a href="#testimonials" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Testimonials</a></li>
+                <li><Link href="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Dashboard</Link></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-gray-400 dark:text-gray-500">
-                <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white transition">Disclaimer</a></li>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Company</h3>
+              <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-400">
+                <li><a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">About Us</a></li>
+                <li><a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Contact</a></li>
               </ul>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Emergency</h4>
-              <ul className="space-y-2 text-gray-400 dark:text-gray-500">
-                <li>Emergency: 116</li>
-                <li>Medical: 114</li>
-                <li>GBV Support: 3029</li>
+              <h3 className="font-bold text-gray-900 dark:text-white mb-4">Contact</h3>
+              <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-400">
+                <li className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  <a href="mailto:support@symptomai.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
+                    support@symptomai.com
+                  </a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Phone className="h-4 w-4" />
+                  <a href="tel:+250788123456" className="hover:text-blue-600 dark:hover:text-blue-400 transition">
+                    +250 788 123 456
+                  </a>
+                </li>
+                <li className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span>Kigali, Rwanda</span>
+                </li>
               </ul>
             </div>
           </div>
 
-          <div className="border-t border-gray-800 dark:border-gray-700 pt-8 text-center text-gray-400 dark:text-gray-500">
-            <p>&copy; 2026 SymptomAI. All rights reserved.</p>
-            <p className="mt-2 text-sm">
-              ⚠️ This is for informational purposes only. Always consult healthcare professionals for medical advice.
+          <div className="pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              © 2024 SymptomAI. All rights reserved.
             </p>
+            <div className="flex items-center gap-6">
+              <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                <Users className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                <TrendingUp className="h-5 w-5" />
+              </a>
+              <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition">
+                <Heart className="h-5 w-5" />
+              </a>
+            </div>
           </div>
         </div>
       </footer>

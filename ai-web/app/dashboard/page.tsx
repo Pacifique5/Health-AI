@@ -20,6 +20,11 @@ import {
   LogOut,
   ChevronDown,
   ChevronUp,
+  ThumbsUp,
+  ThumbsDown,
+  Copy,
+  Share2,
+  FileDown,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -36,6 +41,9 @@ interface ChatMessage {
   id: string;
   role: "user" | "bot";
   content: string;
+  timestamp?: Date;
+  confidence?: number;
+  feedback?: "positive" | "negative" | null;
 }
 
 interface Conversation {
@@ -121,6 +129,7 @@ export default function DashboardPage() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showQuickActionModal, setShowQuickActionModal] = useState(false);
   const [quickActionType, setQuickActionType] = useState<"symptoms" | "heart" | "preventive" | "medication">("symptoms");
+  const [isEmergencyCollapsed, setIsEmergencyCollapsed] = useState(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -253,16 +262,25 @@ export default function DashboardPage() {
       id: `${Date.now()}-user`,
       role: "user",
       content: trimmedContent,
+      timestamp: new Date(),
     };
     setMessages((prev) => [...prev, userMsg]);
     setIsLoading(true);
 
     try {
       const res = await analyzeSymptoms(trimmedContent);
+      
+      // Extract confidence score from response if available
+      const confidenceMatch = res.message.match(/confidence[:\s]+(\d+)%/i);
+      const confidence = confidenceMatch ? parseInt(confidenceMatch[1]) : undefined;
+      
       const botMsg: ChatMessage = {
         id: `${Date.now()}-bot`,
         role: "bot",
         content: res.message,
+        timestamp: new Date(),
+        confidence,
+        feedback: null,
       };
       setMessages((prev) => [...prev, botMsg]);
     } catch {
@@ -273,6 +291,8 @@ export default function DashboardPage() {
           role: "bot",
           content:
             "I'm sorry, I couldn't find a match for your symptoms right now. Please try rephrasing or listing your symptoms differently, and I'll do my best to help!",
+          timestamp: new Date(),
+          feedback: null,
         },
       ]);
     } finally {
@@ -409,15 +429,69 @@ We typically respond within 24 hours during business days.
     await sendMessage(message);
   };
 
+  const handleMessageFeedback = (messageId: string, feedback: "positive" | "negative") => {
+    setMessages((prev) =>
+      prev.map((msg) =>
+        msg.id === messageId ? { ...msg, feedback } : msg
+      )
+    );
+  };
+
+  const handleCopyMessage = (content: string) => {
+    navigator.clipboard.writeText(content);
+    alert("Message copied to clipboard!");
+  };
+
+  const handleExportChat = () => {
+    const chatText = messages
+      .map((msg) => {
+        const time = msg.timestamp ? new Date(msg.timestamp).toLocaleString() : "N/A";
+        return `[${time}] ${msg.role === "user" ? "You" : "SymptomAI"}: ${msg.content}`;
+      })
+      .join("\n\n");
+
+    const blob = new Blob([chatText], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `symptom-ai-chat-${new Date().toISOString().split("T")[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const getConfidenceBadge = (confidence?: number) => {
+    if (!confidence) return null;
+    
+    let color = "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400";
+    let label = "Low Confidence";
+    
+    if (confidence > 70) {
+      color = "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400";
+      label = "High Confidence";
+    } else if (confidence > 50) {
+      color = "bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400";
+      label = "Medium Confidence";
+    }
+    
+    return (
+      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium ${color}`}>
+        <Sparkles className="h-3 w-3" />
+        {confidence}% {label}
+      </span>
+    );
+  };
+
   if (!isAuth) return null;
 
   return (
-    <div className="flex h-screen">
-      <aside className="relative flex w-64 flex-col border-r border-theme bg-slate-950 dark:bg-black px-4 py-6 text-white">
+    <div className="flex h-screen flex-col md:flex-row">
+      <aside className="relative flex w-full md:w-64 flex-col border-r border-theme bg-slate-950 dark:bg-black px-4 py-6 text-white md:h-screen overflow-y-auto">
         <h2 className="mb-4 text-center text-lg font-semibold">All Conversations</h2>
         <button
           onClick={startNewConversation}
-          className="mb-4 rounded-xl bg-emerald-300 px-4 py-2 font-semibold text-slate-900 transition hover:bg-emerald-200"
+          className="mb-4 rounded-xl bg-emerald-300 px-4 py-2 font-semibold text-slate-900 transition hover:bg-emerald-200 hover:scale-105 duration-200"
         >
           + New Conversation
         </button>
@@ -427,14 +501,14 @@ We typically respond within 24 hours during business days.
               key={conv.id}
               type="button"
               onClick={() => selectConversation(conv.id)}
-              className={`w-full rounded-lg border border-transparent px-3 py-2 text-left text-sm transition ${
+              className={`w-full rounded-lg border border-transparent px-3 py-2 text-left text-sm transition hover:scale-102 ${
                 conv.id === activeConversationId
-                  ? "border-emerald-300 bg-slate-800 dark:bg-gray-900 font-semibold"
+                  ? "border-emerald-300 bg-slate-800 dark:bg-gray-900 font-semibold shadow-lg"
                   : "bg-transparent hover:bg-slate-900/60 dark:hover:bg-gray-800/60"
               }`}
               title={conv.title}
             >
-              {conv.title}
+              <div className="truncate">{conv.title}</div>
             </button>
           ))}
         </div>
@@ -538,16 +612,25 @@ We typically respond within 24 hours during business days.
               </div>
               <div className="flex items-center gap-4">
                 <ThemeToggle />
+                {messages.length > 0 && (
+                  <Button
+                    onClick={handleExportChat}
+                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-white shadow-lg transition hover:from-emerald-600 hover:to-teal-700"
+                  >
+                    <FileDown className="h-4 w-4" />
+                    <span className="hidden sm:inline">Export</span>
+                  </Button>
+                )}
                 <Button
                   onClick={() => setShowEmergency(true)}
                   className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white shadow-lg transition hover:from-red-600 hover:to-red-700"
                 >
                   <AlertTriangle className="h-4 w-4" />
-                  Emergency
+                  <span className="hidden sm:inline">Emergency</span>
                 </Button>
                 <div className="flex items-center gap-2">
                   <Sparkles className="h-5 w-5 text-yellow-500 animate-pulse" />
-                  <span className="text-sm font-medium text-theme-secondary">FIQUE&apos;S-AI</span>
+                  <span className="text-sm font-medium text-theme-secondary hidden sm:inline">FIQUE&apos;S-AI</span>
                 </div>
               </div>
             </div>
@@ -567,13 +650,13 @@ We typically respond within 24 hours during business days.
                   {quickActions.map((action) => (
                     <Card
                       key={action.text}
-                      className="group cursor-pointer border-0 bg-white/60 dark:bg-gray-800/60 p-4 backdrop-blur-sm transition hover:scale-105 hover:bg-white/80 dark:hover:bg-gray-800/80"
+                      className="group cursor-pointer border-0 bg-white/60 dark:bg-gray-800/60 p-4 backdrop-blur-sm transition hover:scale-105 hover:bg-white/80 dark:hover:bg-gray-800/80 hover:shadow-xl duration-300 animate-in fade-in slide-in-from-bottom"
                       onClick={() => handleQuickAction(action.text)}
                     >
                       <div
-                        className={`mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-r ${action.color} transition group-hover:scale-110`}
+                        className={`mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r ${action.color} transition group-hover:scale-110 shadow-lg`}
                       >
-                        <action.icon className="h-4 w-4 text-white" />
+                        <action.icon className="h-5 w-5 text-white" />
                       </div>
                       <p className="text-sm font-medium text-theme-secondary">{action.text}</p>
                     </Card>
@@ -582,10 +665,13 @@ We typically respond within 24 hours during business days.
               </div>
             ) : (
               <div className="space-y-6">
-                {messages.map((message) => (
+                {messages.map((message, index) => (
                   <div
                     key={message.id}
-                    className={`flex items-start gap-3 ${message.role === "user" ? "flex-row-reverse text-right" : ""}`}
+                    className={`flex items-start gap-3 animate-in slide-in-from-bottom duration-300 ${
+                      message.role === "user" ? "flex-row-reverse text-right" : ""
+                    }`}
+                    style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <div
                       className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl shadow-lg ${
@@ -609,10 +695,60 @@ We typically respond within 24 hours during business days.
                         }`}
                       >
                         <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
+                        
+                        {/* Confidence Badge for Bot Messages */}
+                        {message.role === "bot" && message.confidence && (
+                          <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                            {getConfidenceBadge(message.confidence)}
+                          </div>
+                        )}
                       </div>
-                      <p className="mt-2 text-xs text-theme-muted">
-                        {new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                      </p>
+                      
+                      {/* Message Actions */}
+                      <div className="mt-2 flex items-center gap-3 text-xs text-theme-muted">
+                        <span>
+                          {message.timestamp
+                            ? new Date(message.timestamp).toLocaleTimeString([], {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                              })
+                            : new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                        </span>
+                        
+                        {message.role === "bot" && (
+                          <div className={`flex items-center gap-2 ${message.role === "user" ? "flex-row-reverse" : ""}`}>
+                            <button
+                              onClick={() => handleCopyMessage(message.content)}
+                              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                              title="Copy message"
+                            >
+                              <Copy className="h-3 w-3" />
+                            </button>
+                            <button
+                              onClick={() => handleMessageFeedback(message.id, "positive")}
+                              className={`p-1 rounded transition ${
+                                message.feedback === "positive"
+                                  ? "bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400"
+                                  : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                              }`}
+                              title="Helpful"
+                            >
+                              <ThumbsUp className="h-3 w-3" />
+                            </button>
+                            <button
+                              onClick={() => handleMessageFeedback(message.id, "negative")}
+                              className={`p-1 rounded transition ${
+                                message.feedback === "negative"
+                                  ? "bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400"
+                                  : "hover:bg-gray-200 dark:hover:bg-gray-700"
+                              }`}
+                              title="Not helpful"
+                            >
+                              <ThumbsDown className="h-3 w-3" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -665,8 +801,8 @@ We typically respond within 24 hours during business days.
       </main>
 
       {showEmergency && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-theme-card shadow-2xl">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-theme-card shadow-2xl animate-in slide-in-from-bottom duration-300">
             <div className="flex items-center justify-between rounded-t-3xl bg-gradient-to-r from-blue-500 to-cyan-600 p-6 text-white">
               <div className="flex items-center gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
@@ -688,24 +824,37 @@ We typically respond within 24 hours during business days.
             </div>
 
             <div className="m-6 rounded-lg border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 p-4 text-blue-700 dark:text-blue-300">
-              <h3 className="font-semibold text-blue-800 dark:text-blue-200">When to Call Emergency Services</h3>
-              <ul className="mt-2 space-y-1 text-sm">
-                <li>• Difficulty breathing or shortness of breath</li>
-                <li>• Chest pain or pressure</li>
-                <li>• Severe bleeding or trauma</li>
-                <li>• Loss of consciousness</li>
-                <li>• Signs of stroke (face drooping, arm weakness, speech difficulty)</li>
-                <li>• Severe allergic reactions</li>
-              </ul>
+              <button
+                onClick={() => setIsEmergencyCollapsed(!isEmergencyCollapsed)}
+                className="flex w-full items-center justify-between font-semibold text-blue-800 dark:text-blue-200"
+              >
+                <span>When to Call Emergency Services</span>
+                {isEmergencyCollapsed ? (
+                  <ChevronDown className="h-5 w-5" />
+                ) : (
+                  <ChevronUp className="h-5 w-5" />
+                )}
+              </button>
+              {!isEmergencyCollapsed && (
+                <ul className="mt-2 space-y-1 text-sm animate-in slide-in-from-top duration-200">
+                  <li>• Difficulty breathing or shortness of breath</li>
+                  <li>• Chest pain or pressure</li>
+                  <li>• Severe bleeding or trauma</li>
+                  <li>• Loss of consciousness</li>
+                  <li>• Signs of stroke (face drooping, arm weakness, speech difficulty)</li>
+                  <li>• Severe allergic reactions</li>
+                </ul>
+              )}
             </div>
 
             <div className="space-y-4 p-6">
-              {emergencyContacts.map((contact) => (
+              {emergencyContacts.map((contact, index) => (
                 <Card
                   key={contact.name}
-                  className={`cursor-pointer border-0 p-4 shadow-lg transition hover:scale-[1.02] hover:shadow-xl ${
-                    contact.urgent ? "ring-2 ring-red-200" : ""
+                  className={`cursor-pointer border-0 p-4 shadow-lg transition hover:scale-[1.02] hover:shadow-xl animate-in slide-in-from-bottom duration-300 ${
+                    contact.urgent ? "ring-2 ring-red-200 dark:ring-red-800" : ""
                   }`}
+                  style={{ animationDelay: `${index * 50}ms` }}
                   onClick={() => {
                     if (contact.number.toLowerCase().startsWith("text")) {
                       window.open(`sms:${contact.number.replace(/\D/g, "")}`, "_blank");

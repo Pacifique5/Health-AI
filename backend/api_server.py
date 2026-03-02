@@ -20,17 +20,22 @@ except Exception as e:
 def format_cli_response(result):
     def safe_join(val):
         if isinstance(val, list):
-            return ', '.join([str(v) for v in val if v])
+            return ', '.join([str(v).strip() for v in val if v and str(v).strip()])
         if isinstance(val, str):
-            return val
+            return val.strip() if val.strip() else '-'
         return '-'
+    
+    confidence = result.get('confidence', 0)
+    confidence_emoji = "🟢" if confidence > 70 else "🟡" if confidence > 50 else "🟠"
+    
     return (
         f"✅ Possible Disease: {result.get('disease', '-').title()}\n"
+        f"{confidence_emoji} Confidence: {confidence}%\n"
         f"📄 Description: {result.get('description', '-')}\n"
         f"💊 Medications: {safe_join(result.get('medications', []))}\n"
         f"🛠️ Procedures: {safe_join(result.get('procedures', []))}\n"
         f"🧼 Precautions: {safe_join(result.get('precautions', []))}\n"
-        f"👨‍⚕️ Specialist to Consult: {result.get('specialist', '-')}"
+        f"👨‍⚕️ Specialist to Consult: {result.get('specialist', 'General Practitioner')}"
     )
 
 @app.route('/api/analyze', methods=['POST'])
