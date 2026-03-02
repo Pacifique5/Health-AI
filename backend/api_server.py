@@ -31,17 +31,17 @@ def format_cli_response(result):
         error_type = result['error']
         message = result.get('message', 'Unknown error')
         
-        response = f"⚠️ {message}\n"
+        response = f"💬 {message}\n"
         
         if result.get('recognized_symptoms'):
-            response += f"\n✅ Recognized symptoms: {', '.join(result['recognized_symptoms'])}"
+            response += f"\n✅ I recognized: {', '.join(result['recognized_symptoms'])}"
         
         if result.get('unknown_symptoms'):
-            response += f"\n❌ Unknown symptoms: {', '.join(result['unknown_symptoms'])}"
+            response += f"\n❓ I didn't quite catch: {', '.join(result['unknown_symptoms'])}"
         
         if result.get('suggestion') or result.get('suggestions'):
             suggestion = result.get('suggestion') or result.get('suggestions')
-            response += f"\n💡 Suggestion: {suggestion}"
+            response += f"\n💡 {suggestion}"
         
         return response
     
@@ -58,7 +58,7 @@ def format_cli_response(result):
         confidence_emoji = "🟠"
     
     response = (
-        f"✅ Possible Disease: {result.get('disease', '-').title()}\n"
+        f"✅ Possible Condition: {result.get('disease', '-').title()}\n"
         f"{confidence_emoji} Confidence: {confidence}% ({result.get('accuracy_message', 'N/A')})\n"
         f"📊 Analysis: {result.get('recognized_symptoms', 0)}/{result.get('total_symptoms_provided', 0)} symptoms recognized\n"
         f"📄 Description: {result.get('description', '-')}\n"
@@ -76,13 +76,13 @@ def format_cli_response(result):
     
     # Add unknown symptoms warning
     if result.get('unknown_symptoms'):
-        response += f"\n\n⚠️ Unknown symptoms (not used in diagnosis): {', '.join(result['unknown_symptoms'])}"
+        response += f"\n\n❓ I didn't recognize these: {', '.join(result['unknown_symptoms'])}"
     
     # Add alternative diagnoses
     if result.get('alternative_diagnoses'):
         alts = [f"{alt['disease']} ({alt['confidence']}%)" 
                 for alt in result['alternative_diagnoses']]
-        response += f"\n\n🔄 Alternative diagnoses to consider:\n  " + "\n  ".join(alts)
+        response += f"\n\n🔄 Other possibilities to consider:\n  " + "\n  ".join(alts)
     
     return response
 
@@ -108,8 +108,15 @@ def analyze():
         if greeting_response:
             print("Greeting detected. Responding:", greeting_response, flush=True)
             return jsonify({'message': greeting_response})
-            
-        symptom_list = [s.strip() for s in symptoms.split(',') if s.strip()]
+        
+        # Parse symptoms - handle both comma-separated and space-separated
+        if ',' in symptoms:
+            # User used commas, split by comma
+            symptom_list = [s.strip() for s in symptoms.split(',') if s.strip()]
+        else:
+            # No commas, split by spaces/newlines
+            symptom_list = [s.strip() for s in symptoms.split() if s.strip()]
+        
         print("Symptom list:", symptom_list, flush=True)
         
         if not symptom_list:
@@ -118,8 +125,8 @@ def analyze():
                 'message': 'Please provide symptoms separated by commas.'
             }), 400
             
-        # Get prediction with validation
-        result = predictor.match_disease(symptom_list, min_symptoms=1, min_confidence=30)
+        # Get prediction with validation (require at least 3 symptoms for accurate diagnosis)
+        result = predictor.match_disease(symptom_list, min_symptoms=3, min_confidence=30)
         print("Result:", result, flush=True)
         
         if result:

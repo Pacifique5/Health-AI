@@ -828,7 +828,7 @@ We typically respond within 24 hours during business days.
                   <Input
                     value={input}
                     onChange={(event) => setInput(event.target.value)}
-                    placeholder="Describe your signs and symptoms ..."
+                    placeholder="Describe your signs and symptoms (e.g., fever, cough, headache)..."
                     className="w-full rounded-2xl border-0 bg-white dark:bg-gray-800 py-3 pl-4 pr-4 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-sm"
                     disabled={isLoading}
                   />

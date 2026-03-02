@@ -148,32 +148,32 @@ export default function LandingPage() {
 
   const team = [
     {
-      name: "Dr. James Wilson",
-      role: "Chief Medical Officer",
-      avatar: "JW",
-      color: "from-blue-500 to-cyan-500",
-      bio: "15+ years in medical AI research",
+      name: "Mugisha Pacifique",
+      role: "Lead Developer",
+      avatar: "MP",
+      color: "from-blue-400 to-blue-500",
+      bio: "Full-stack engineer & AI specialist",
     },
     {
-      name: "Sarah Martinez",
-      role: "Lead AI Engineer",
-      avatar: "SM",
-      color: "from-purple-500 to-pink-500",
-      bio: "Former Google Health AI specialist",
+      name: "Ruyange Arnold",
+      role: "Backend Engineer",
+      avatar: "RY",
+      color: "from-emerald-400 to-emerald-500",
+      bio: "Systems architect & data expert",
     },
     {
-      name: "Dr. Aisha Patel",
-      role: "Clinical Director",
-      avatar: "AP",
-      color: "from-emerald-500 to-teal-500",
-      bio: "Board-certified physician & researcher",
+      name: "Nyumbayire Laurent",
+      role: "Frontend Developer",
+      avatar: "LT",
+      color: "from-purple-400 to-purple-500",
+      bio: "UI/UX designer & React specialist",
     },
     {
-      name: "Marcus Chen",
-      role: "Head of Product",
-      avatar: "MC",
-      color: "from-orange-500 to-red-500",
-      bio: "10+ years in healthcare tech",
+      name: "Mbabazi Christopher",
+      role: "Product Manager",
+      avatar: "FG",
+      color: "from-rose-400 to-rose-500",
+      bio: "Healthcare tech innovator",
     },
   ];
 
@@ -202,37 +202,36 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-blue-50/30 dark:from-gray-900 dark:via-slate-900 dark:to-slate-950">
       {/* Animated Background */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div 
-          className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-400/30 via-cyan-400/20 to-transparent rounded-full blur-3xl animate-pulse"
+          className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-blue-400/10 via-cyan-400/5 to-transparent rounded-full blur-3xl"
           style={{
             transform: `translate(${mousePosition.x}px, ${mousePosition.y}px)`,
             transition: "transform 0.3s ease-out",
           }}
         />
         <div 
-          className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-purple-400/30 via-pink-400/20 to-transparent rounded-full blur-3xl animate-pulse"
+          className="absolute bottom-0 left-0 w-[800px] h-[800px] bg-gradient-to-br from-purple-400/10 via-pink-400/5 to-transparent rounded-full blur-3xl"
           style={{
             transform: `translate(${-mousePosition.x}px, ${-mousePosition.y}px)`,
             transition: "transform 0.3s ease-out",
-            animationDelay: "1s",
           }}
         />
         
         {/* Floating Medical Icons */}
-        <div className="absolute top-20 left-20 animate-float" style={{ animationDelay: "0s" }}>
-          <Stethoscope className="h-12 w-12 text-blue-400/30" />
+        <div className="absolute top-20 left-20 animate-float opacity-20" style={{ animationDelay: "0s" }}>
+          <Stethoscope className="h-12 w-12 text-blue-400" />
         </div>
-        <div className="absolute top-40 right-32 animate-float" style={{ animationDelay: "1s" }}>
-          <Heart className="h-16 w-16 text-rose-400/30" />
+        <div className="absolute top-40 right-32 animate-float opacity-20" style={{ animationDelay: "1s" }}>
+          <Heart className="h-16 w-16 text-rose-400" />
         </div>
-        <div className="absolute bottom-32 left-40 animate-float" style={{ animationDelay: "2s" }}>
-          <Pill className="h-10 w-10 text-purple-400/30" />
+        <div className="absolute bottom-32 left-40 animate-float opacity-20" style={{ animationDelay: "2s" }}>
+          <Pill className="h-10 w-10 text-purple-400" />
         </div>
-        <div className="absolute bottom-20 right-20 animate-float" style={{ animationDelay: "1.5s" }}>
-          <Brain className="h-14 w-14 text-cyan-400/30" />
+        <div className="absolute bottom-20 right-20 animate-float opacity-20" style={{ animationDelay: "1.5s" }}>
+          <Brain className="h-14 w-14 text-cyan-400" />
         </div>
       </div>
 
@@ -337,40 +336,40 @@ export default function LandingPage() {
 
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-blue-100 via-purple-100 to-pink-100 dark:from-blue-900/30 dark:via-purple-900/30 dark:to-pink-900/30 text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 text-sm font-bold mb-8 animate-shimmer bg-300% shadow-lg animate-bounce-slow">
-              <Sparkles className="h-5 w-5 text-yellow-500 animate-spin-slow" />
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                AI-Powered Health Analysis • 41+ Diseases • 100% Accurate
+            <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-blue-200/50 dark:border-blue-800/50 text-sm font-medium mb-8 shadow-sm">
+              <Sparkles className="h-4 w-4 text-blue-500" />
+              <span className="bg-gradient-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+                AI-Powered Health Analysis • 41+ Diseases • Medical-Grade Accuracy
               </span>
-              <Zap className="h-5 w-5 text-yellow-500 animate-pulse" />
+              <Zap className="h-4 w-4 text-purple-500" />
             </div>
             
-            <h1 className="text-6xl md:text-8xl font-black mb-8 animate-fade-in leading-tight">
-              <span className="bg-gradient-to-r from-blue-600 via-purple-600 via-pink-600 to-cyan-600 bg-clip-text text-transparent animate-gradient bg-300% drop-shadow-2xl">
+            <h1 className="text-5xl md:text-7xl font-black mb-6 animate-fade-in leading-tight">
+              <span className="bg-gradient-to-r from-slate-700 via-blue-600 to-purple-600 dark:from-slate-200 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
                 {typedText}
               </span>
-              <span className="animate-pulse text-purple-600">|</span>
+              <span className="animate-pulse text-blue-600 dark:text-blue-400">|</span>
             </h1>
             
-            <p className="text-2xl text-gray-700 dark:text-gray-200 mb-10 max-w-3xl mx-auto animate-slide-up leading-relaxed font-medium">
-              Get instant, AI-powered health insights. Analyze symptoms across <span className="text-blue-600 dark:text-blue-400 font-bold">41+ diseases</span> with <span className="text-purple-600 dark:text-purple-400 font-bold">medical-grade accuracy</span>. Your health, simplified.
+            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+              Get instant, AI-powered health insights. Analyze symptoms across <span className="text-blue-600 dark:text-blue-400 font-semibold">41+ diseases</span> with <span className="text-purple-600 dark:text-purple-400 font-semibold">medical-grade accuracy</span>. Your health, simplified.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-scale-in mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center animate-scale-in mb-10">
               <Button
                 onClick={() => router.push(isAuthenticated ? "/dashboard" : "/signup")}
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-10 py-7 text-xl font-bold text-white shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-500"
+                className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-500 to-purple-500 px-8 py-6 text-lg font-semibold text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
               >
-                <span className="relative z-10 flex items-center gap-3">
-                  <Sparkles className="h-6 w-6" />
+                <span className="relative z-10 flex items-center gap-2">
+                  <Sparkles className="h-5 w-5" />
                   Start Free Analysis
-                  <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
+                  <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </span>
               </Button>
               <Button
                 onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
                 variant="outline"
-                className="rounded-2xl px-10 py-7 text-xl font-bold border-4 border-purple-500 text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-950/30 hover:scale-105 transition-all duration-300 shadow-lg"
+                className="rounded-xl px-8 py-6 text-lg font-semibold border-2 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 hover:scale-105 transition-all duration-300"
               >
                 Learn More
               </Button>
@@ -396,22 +395,22 @@ export default function LandingPage() {
       </section>
 
       {/* Stats Section */}
-      <section className="relative py-20 px-6 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500">
+      <section className="relative py-16 px-6 bg-gradient-to-r from-blue-500/90 to-purple-500/90 dark:from-blue-600/80 dark:to-purple-600/80">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {stats.map((stat, index) => (
               <div
                 key={stat.label}
-                className="text-center group animate-scale-in hover:scale-110 transition-transform duration-500 cursor-pointer"
+                className="text-center group hover:scale-105 transition-transform duration-300 cursor-pointer"
                 style={{ animationDelay: `${index * 100}ms` }}
               >
-                <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-white/20 backdrop-blur-sm mb-4 shadow-2xl group-hover:rotate-12 group-hover:bg-white/30 transition-all duration-500">
-                  <stat.icon className="h-10 w-10 text-white animate-bounce-slow" />
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-white/20 backdrop-blur-sm mb-4 shadow-lg group-hover:bg-white/30 transition-all duration-300">
+                  <stat.icon className="h-8 w-8 text-white" />
                 </div>
-                <div className="text-5xl md:text-6xl font-black text-white mb-2 drop-shadow-lg group-hover:scale-125 transition-transform duration-300">
+                <div className="text-4xl md:text-5xl font-bold text-white mb-2 group-hover:scale-110 transition-transform duration-300">
                   {stat.number}
                 </div>
-                <div className="text-sm md:text-base text-white/90 font-bold uppercase tracking-wider">
+                <div className="text-sm text-white/90 font-medium uppercase tracking-wide">
                   {stat.label}
                 </div>
               </div>
@@ -424,10 +423,10 @@ export default function LandingPage() {
       <section id="features" className="relative py-20 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-slate-700 to-blue-600 dark:from-slate-300 dark:to-blue-400 bg-clip-text text-transparent">
               Powerful Features
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Everything you need for comprehensive health analysis and monitoring
             </p>
           </div>
@@ -572,59 +571,67 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Team Section */}
-      <section className="relative py-20 px-6">
+      {/* Team Section - Animated Carousel */}
+      <section className="relative py-20 px-6 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/30 dark:from-gray-900 dark:via-slate-900/50 dark:to-purple-950/20">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-100 to-cyan-100 dark:from-blue-900/30 dark:to-cyan-900/30 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100/80 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-medium mb-6">
               <Users className="h-4 w-4" />
               Meet Our Team
             </div>
-            <h2 className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-600 bg-clip-text text-transparent animate-gradient bg-300%">
-              The Minds Behind SymptomAI
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-slate-700 via-blue-600 to-purple-600 dark:from-slate-300 dark:via-blue-400 dark:to-purple-400 bg-clip-text text-transparent">
+              The Minds Behind FIQUE'S-AI
             </h2>
-            <p className="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-              A diverse team of medical professionals, AI experts, and healthcare innovators
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+              A passionate team dedicated to making healthcare accessible through AI
             </p>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
-            {team.map((member, index) => (
-              <div
-                key={member.name}
-                className="group animate-scale-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                <Card className="relative overflow-hidden border-0 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 hover:scale-105 transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl">
-                  {/* Animated gradient background */}
-                  <div className={`absolute inset-0 bg-gradient-to-br ${member.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                  
-                  <div className="relative z-10">
-                    {/* Avatar */}
-                    <div className="mb-6 flex justify-center">
-                      <div className={`relative flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br ${member.color} text-white text-2xl font-bold shadow-xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-                        {member.avatar}
-                        {/* Pulse ring */}
-                        <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${member.color} animate-ping opacity-20`} />
+          {/* Animated scrolling container */}
+          <div className="relative">
+            {/* Gradient overlays for fade effect */}
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent dark:from-gray-900 dark:via-gray-900/80 dark:to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-slate-50 via-slate-50/80 to-transparent dark:from-gray-900 dark:via-gray-900/80 dark:to-transparent z-10 pointer-events-none" />
+            
+            {/* Scrolling track */}
+            <div className="flex gap-6 animate-scroll-slow hover:pause-animation">
+              {/* Duplicate team members for seamless loop */}
+              {[...team, ...team].map((member, index) => (
+                <div
+                  key={`${member.name}-${index}`}
+                  className="flex-shrink-0 w-72 group"
+                >
+                  <Card className="relative overflow-hidden border border-gray-200/50 dark:border-gray-700/50 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 hover:scale-105 hover:shadow-xl transition-all duration-500 cursor-pointer h-full">
+                    {/* Subtle gradient background */}
+                    <div className={`absolute inset-0 bg-gradient-to-br ${member.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+                    
+                    <div className="relative z-10">
+                      {/* Avatar */}
+                      <div className="mb-6 flex justify-center">
+                        <div className={`relative flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br ${member.color} text-white text-xl font-bold shadow-lg group-hover:scale-110 transition-all duration-500`}>
+                          {member.avatar}
+                          {/* Subtle pulse ring */}
+                          <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${member.color} animate-ping opacity-10`} />
+                        </div>
+                      </div>
+
+                      {/* Info */}
+                      <div className="text-center">
+                        <h3 className="text-lg font-bold mb-1 text-gray-900 dark:text-white">
+                          {member.name}
+                        </h3>
+                        <p className="text-sm font-medium mb-3 text-gray-600 dark:text-gray-400">
+                          {member.role}
+                        </p>
+                        <p className="text-xs text-gray-500 dark:text-gray-500">
+                          {member.bio}
+                        </p>
                       </div>
                     </div>
-
-                    {/* Info */}
-                    <div className="text-center group-hover:text-white transition-colors duration-500">
-                      <h3 className="text-xl font-bold mb-2">
-                        {member.name}
-                      </h3>
-                      <p className="text-sm font-medium mb-3 opacity-80">
-                        {member.role}
-                      </p>
-                      <p className="text-xs opacity-70">
-                        {member.bio}
-                      </p>
-                    </div>
-                  </div>
-                </Card>
-              </div>
-            ))}
+                  </Card>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>

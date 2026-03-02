@@ -157,7 +157,7 @@ class SymptomPredictor:
                 
         return cleaned, unknown, matched_info
 
-    def match_disease(self, user_symptoms, min_symptoms=1, min_confidence=30):
+    def match_disease(self, user_symptoms, min_symptoms=3, min_confidence=30):
         """
         Match disease based on symptoms with validation and accuracy reporting.
         
@@ -175,7 +175,7 @@ class SymptomPredictor:
         if not user_symptoms:
             return {
                 "error": "no_symptoms",
-                "message": "No symptoms provided. Please describe your symptoms."
+                "message": "I'd love to help! Could you tell me what symptoms you're experiencing?"
             }
         
         # Preprocess symptoms with validation
@@ -185,18 +185,36 @@ class SymptomPredictor:
         if not processed_symptoms:
             return {
                 "error": "unknown_symptoms",
-                "message": "None of the provided symptoms are recognized. Please check spelling or try different symptom descriptions.",
+                "message": "I'm sorry, I couldn't find a match for your symptoms right now. Please try rephrasing or listing your symptoms differently, and I'll do my best to help!",
                 "unknown_symptoms": unknown_symptoms,
-                "suggestions": "Try using common medical terms like 'fever', 'cough', 'headache', 'fatigue', etc."
+                "suggestions": "Try using terms like 'fever', 'cough', 'headache', 'nausea', 'fatigue', 'sore throat', etc."
             }
         
+        # If we have some recognized symptoms but also unknown ones, prioritize asking about unknown
+        if unknown_symptoms and len(unknown_symptoms) >= len(processed_symptoms):
+            # More unknown than known - treat as unrecognized
+            return {
+                "error": "unknown_symptoms",
+                "message": "I'm sorry, I couldn't find a match for your symptoms right now. Please try rephrasing or listing your symptoms differently, and I'll do my best to help!",
+                "unknown_symptoms": unknown_symptoms,
+                "recognized_symptoms": [m['matched'] for m in matched_info] if matched_info else None,
+                "suggestions": "Try using terms like 'fever', 'cough', 'headache', 'nausea', 'fatigue', 'sore throat', etc."
+            }
+        
+        # If we have recognized symptoms but not enough, ask for more
         if len(processed_symptoms) < min_symptoms:
+            recognized_list = ', '.join([m['matched'] for m in matched_info])
+            symptom_count = len(processed_symptoms)
+            needed = min_symptoms - symptom_count
+            
             return {
                 "error": "insufficient_symptoms",
-                "message": f"Only {len(processed_symptoms)} valid symptom(s) recognized. Please provide more symptoms for accurate diagnosis.",
+                "message": f"Thanks for sharing! I recognized {symptom_count} symptom(s): {recognized_list}. To give you an accurate diagnosis, I need at least {min_symptoms} symptoms. Could you add {needed} more symptom(s)? Tell me more about how you're feeling!",
                 "recognized_symptoms": [m['matched'] for m in matched_info],
-                "unknown_symptoms": unknown_symptoms,
-                "suggestion": "Add more symptoms to improve accuracy. At least 2-3 symptoms are recommended."
+                "unknown_symptoms": unknown_symptoms if unknown_symptoms else None,
+                "symptom_count": symptom_count,
+                "required_count": min_symptoms,
+                "suggestion": "The more details you share, the better I can help!"
             }
 
         # Find best matching diseases (top 3)
@@ -289,21 +307,33 @@ class SymptomPredictor:
             
             return result
         else:
-            # No confident match found
-            if disease_scores:
-                best_score = disease_scores[0]['score']
-                return {
-                    "error": "low_confidence",
-                    "message": f"Unable to confidently diagnose (best match: {best_score:.1f}%). Please provide more specific symptoms.",
-                    "recognized_symptoms": [m['matched'] for m in matched_info],
-                    "unknown_symptoms": unknown_symptoms if unknown_symptoms else None,
-                    "suggestion": "Try adding more symptoms or being more specific about your condition."
-                }
+            # No confident match found - but we have recognized symptoms
+            recognized = [m['matched'] for m in matched_info]
+            
+            # If we recognized the symptoms, ask for more details (don't say "no match")
+            if recognized:
+                if len(recognized) == 1:
+                    return {
+                        "error": "need_more_symptoms",
+                        "message": f"I see you're experiencing {recognized[0]}. Could you tell me more about how you're feeling? Any other symptoms would really help me understand what might be going on.",
+                        "recognized_symptoms": recognized,
+                        "unknown_symptoms": unknown_symptoms if unknown_symptoms else None,
+                        "suggestion": "Share any other discomfort or changes you've noticed - even small details can help!"
+                    }
+                else:
+                    return {
+                        "error": "need_more_symptoms",
+                        "message": f"I noticed you mentioned {', '.join(recognized)}. Could you share any other symptoms or describe how you're feeling in more detail? This will help me give you better guidance.",
+                        "recognized_symptoms": recognized,
+                        "unknown_symptoms": unknown_symptoms if unknown_symptoms else None,
+                        "suggestion": "More details about your symptoms will help me understand better."
+                    }
             else:
+                # Only use "no match" when symptoms truly weren't recognized
                 return {
                     "error": "no_match",
-                    "message": "Could not find a matching disease for the provided symptoms.",
-                    "recognized_symptoms": [m['matched'] for m in matched_info],
+                    "message": "I'm sorry, I couldn't find a match for your symptoms right now. Please try rephrasing or listing your symptoms differently, and I'll do my best to help!",
+                    "recognized_symptoms": [],
                     "unknown_symptoms": unknown_symptoms if unknown_symptoms else None
                 }
 

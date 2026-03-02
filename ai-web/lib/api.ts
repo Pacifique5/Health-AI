@@ -5,10 +5,19 @@ export async function analyzeSymptoms(symptoms: string) {
     body: JSON.stringify({ symptoms }),
   });
 
+  const data = await res.json();
+  
+  // Return the message regardless of status code
+  // The backend sends helpful messages even for errors (422, etc.)
+  if (data.message) {
+    return { message: data.message };
+  }
+  
+  // Fallback if no message in response
   if (!res.ok) {
-    throw new Error("Failed to analyze symptoms");
+    throw new Error(data.error || "Failed to analyze symptoms");
   }
 
-  return res.json() as Promise<{ message: string }>;
+  return data as { message: string };
 }
 
