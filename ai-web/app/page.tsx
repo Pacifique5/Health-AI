@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   Activity,
   Heart,
@@ -203,7 +202,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950">
       {/* Animated Background */}
       <div className="fixed inset-0 -z-10 overflow-hidden">
         <div 
@@ -360,14 +359,13 @@ export default function LandingPage() {
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center animate-scale-in mb-12">
               <Button
                 onClick={() => router.push(isAuthenticated ? "/dashboard" : "/signup")}
-                className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-10 py-7 text-xl font-bold text-white shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-500 animate-shimmer bg-300%"
+                className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 px-10 py-7 text-xl font-bold text-white shadow-2xl hover:shadow-purple-500/50 hover:scale-110 transition-all duration-500"
               >
                 <span className="relative z-10 flex items-center gap-3">
-                  <Sparkles className="h-6 w-6 animate-spin-slow" />
+                  <Sparkles className="h-6 w-6" />
                   Start Free Analysis
                   <ArrowRight className="h-6 w-6 group-hover:translate-x-2 transition-transform duration-300" />
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </Button>
               <Button
                 onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
@@ -698,7 +696,6 @@ export default function LandingPage() {
                 <li><a href="#features" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Features</a></li>
                 <li><a href="#how-it-works" className="hover:text-blue-600 dark:hover:text-blue-400 transition">How It Works</a></li>
                 <li><a href="#testimonials" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Testimonials</a></li>
-                <li><Link href="/dashboard" className="hover:text-blue-600 dark:hover:text-blue-400 transition">Dashboard</Link></li>
               </ul>
             </div>
 

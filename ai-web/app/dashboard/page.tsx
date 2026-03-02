@@ -116,7 +116,7 @@ export default function DashboardPage() {
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [showEmergency, setShowEmergency] = useState(false);
+  const [showEmergencyCards, setShowEmergencyCards] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -129,7 +129,6 @@ export default function DashboardPage() {
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [showQuickActionModal, setShowQuickActionModal] = useState(false);
   const [quickActionType, setQuickActionType] = useState<"symptoms" | "heart" | "preventive" | "medication">("symptoms");
-  const [isEmergencyCollapsed, setIsEmergencyCollapsed] = useState(false);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -486,25 +485,45 @@ We typically respond within 24 hours during business days.
   if (!isAuth) return null;
 
   return (
-    <div className="flex h-screen flex-col md:flex-row">
-      <aside className="relative flex w-full md:w-64 flex-col border-r border-theme bg-slate-950 dark:bg-black px-4 py-6 text-white md:h-screen overflow-y-auto">
-        <h2 className="mb-4 text-center text-lg font-semibold">All Conversations</h2>
+    <div className="flex h-screen w-full overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-gray-900 dark:via-slate-900 dark:to-indigo-950">
+      {/* Animated Background */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-400/20 via-cyan-400/10 to-transparent rounded-full blur-3xl animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-br from-purple-400/20 via-pink-400/10 to-transparent rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }} />
+      </div>
+
+      {/* Left Sidebar - Conversations */}
+      <aside className="relative flex w-72 flex-col border-r border-white/20 dark:border-gray-700/20 bg-gradient-to-br from-slate-900 via-blue-900 to-indigo-900 dark:from-black dark:via-gray-900 dark:to-indigo-950 px-4 py-6 text-white h-screen overflow-y-auto backdrop-blur-xl shadow-2xl">
+        <div className="mb-6 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 mb-2">
+            <Sparkles className="h-4 w-4 text-cyan-400 animate-pulse" />
+            <span className="text-sm font-bold text-cyan-300">AI Assistant</span>
+          </div>
+          <h2 className="text-xl font-bold bg-gradient-to-r from-blue-300 via-cyan-300 to-purple-300 bg-clip-text text-transparent">
+            Conversations
+          </h2>
+        </div>
+        
         <button
           onClick={startNewConversation}
-          className="mb-4 rounded-xl bg-emerald-300 px-4 py-2 font-semibold text-slate-900 transition hover:bg-emerald-200 hover:scale-105 duration-200"
+          className="mb-6 rounded-xl bg-gradient-to-r from-blue-500 via-cyan-500 to-purple-500 px-4 py-3 font-bold text-white transition hover:from-blue-600 hover:via-cyan-600 hover:to-purple-600 hover:scale-105 duration-300 shadow-lg hover:shadow-cyan-500/50 animate-shimmer bg-300%"
         >
-          + New Conversation
+          <span className="flex items-center justify-center gap-2">
+            <Sparkles className="h-4 w-4" />
+            New Conversation
+          </span>
         </button>
-        <div className="flex-1 space-y-2 overflow-y-auto pr-1">
+        
+        <div className="flex-1 space-y-2 overflow-y-auto pr-1 mb-4">
           {conversations.map((conv) => (
             <button
               key={conv.id}
               type="button"
               onClick={() => selectConversation(conv.id)}
-              className={`w-full rounded-lg border border-transparent px-3 py-2 text-left text-sm transition hover:scale-102 ${
+              className={`w-full rounded-xl border px-3 py-3 text-left text-sm transition-all duration-300 ${
                 conv.id === activeConversationId
-                  ? "border-emerald-300 bg-slate-800 dark:bg-gray-900 font-semibold shadow-lg"
-                  : "bg-transparent hover:bg-slate-900/60 dark:hover:bg-gray-800/60"
+                  ? "border-cyan-400/50 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 font-semibold shadow-lg shadow-cyan-500/20 scale-105"
+                  : "border-transparent bg-white/5 hover:bg-white/10 hover:scale-102"
               }`}
               title={conv.title}
             >
@@ -514,39 +533,39 @@ We typically respond within 24 hours during business days.
         </div>
         
         {/* Profile Section with Dropdown */}
-        <div className="relative mt-4 border-t border-slate-700 dark:border-gray-600 pt-4" ref={profileDropdownRef}>
+        <div className="relative mt-auto border-t border-white/10 pt-4" ref={profileDropdownRef}>
           <button
             onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-            className="flex w-full items-center justify-between rounded-lg bg-slate-800 dark:bg-gray-900 p-3 transition hover:bg-slate-700 dark:hover:bg-gray-800"
+            className="flex w-full items-center justify-between rounded-xl bg-gradient-to-r from-blue-500/20 to-purple-500/20 border border-blue-400/30 p-3 transition hover:from-blue-500/30 hover:to-purple-500/30 hover:scale-105 duration-300"
           >
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-cyan-500">
-                <User className="h-5 w-5 text-white" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 via-cyan-500 to-purple-500 shadow-lg animate-pulse">
+                <User className="h-6 w-6 text-white" />
               </div>
               <div className="text-left">
-                <p className="text-sm font-semibold text-white">
+                <p className="text-sm font-bold text-white">
                   {userInfo?.username || "User"}
                 </p>
-                <p className="text-xs text-slate-400">Online</p>
+                <p className="text-xs text-cyan-300">● Online</p>
               </div>
             </div>
             {showProfileDropdown ? (
-              <ChevronUp className="h-4 w-4 text-slate-400" />
+              <ChevronUp className="h-4 w-4 text-cyan-300" />
             ) : (
-              <ChevronDown className="h-4 w-4 text-slate-400" />
+              <ChevronDown className="h-4 w-4 text-cyan-300" />
             )}
           </button>
 
           {/* Profile Dropdown Menu */}
           {showProfileDropdown && (
-            <div className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-slate-800 dark:bg-gray-900 border border-slate-600 dark:border-gray-700 shadow-xl animate-in slide-in-from-bottom-2 duration-200">
+            <div className="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-gradient-to-br from-slate-800 to-slate-900 border border-cyan-400/30 shadow-2xl animate-scale-in backdrop-blur-xl">
               <div className="p-2 space-y-1">
                 <button
                   onClick={() => {
                     handleDownloadApp();
                     setShowProfileDropdown(false);
                   }}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-white transition hover:bg-slate-700 dark:hover:bg-gray-800"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-white transition hover:bg-gradient-to-r hover:from-blue-500/20 hover:to-cyan-500/20"
                 >
                   <Download className="h-4 w-4" />
                   Download mobile App
@@ -588,83 +607,110 @@ We typically respond within 24 hours during business days.
         </div>
       </aside>
 
-      <main className="relative flex-1 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {/* Main Chat Area */}
+      <main className="relative flex-1 flex flex-col min-h-0 overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-gradient-to-br from-blue-400/20 to-cyan-400/20 blur-3xl" />
         <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-gradient-to-br from-green-400/20 to-emerald-400/20 blur-3xl" />
         <div className="absolute left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-purple-400/10 to-pink-400/10 blur-3xl" />
 
-        <div className="relative z-10 mx-auto flex h-full max-w-4xl flex-col">
-          <header className="border-b border-white/20 dark:border-gray-700/20 bg-white/10 dark:bg-gray-800/10 p-6 backdrop-blur-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="relative">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
-                    <Bot className="h-6 w-6 text-white" />
-                  </div>
-                  <div className="absolute -right-1 -top-1 h-4 w-4 rounded-full border-2 border-white bg-green-400 animate-pulse" />
+        {/* Header - Sticky at top with glass effect */}
+        <header className="flex-shrink-0 sticky top-0 relative z-20 border-b border-white/20 dark:border-gray-700/20 bg-white/70 dark:bg-gray-900/70 p-4 backdrop-blur-xl shadow-lg">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl blur-lg opacity-50 group-hover:opacity-100 transition-opacity animate-pulse" />
+                <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 via-cyan-500 to-purple-500 shadow-2xl">
+                  <Bot className="h-7 w-7 text-white animate-pulse" />
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-transparent bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text">
-                    SymptomAI
-                  </h1>
-                  <p className="text-sm text-theme-secondary">Your Smart Health Assistant</p>
-                </div>
+                <div className="absolute -right-1 -top-1 h-4 w-4 rounded-full border-2 border-white bg-green-400 animate-pulse shadow-lg" />
               </div>
-              <div className="flex items-center gap-4">
-                <ThemeToggle />
-                {messages.length > 0 && (
-                  <Button
-                    onClick={handleExportChat}
-                    className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-white shadow-lg transition hover:from-emerald-600 hover:to-teal-700"
-                  >
-                    <FileDown className="h-4 w-4" />
-                    <span className="hidden sm:inline">Export</span>
-                  </Button>
-                )}
-                <Button
-                  onClick={() => setShowEmergency(true)}
-                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white shadow-lg transition hover:from-red-600 hover:to-red-700"
-                >
-                  <AlertTriangle className="h-4 w-4" />
-                  <span className="hidden sm:inline">Emergency</span>
-                </Button>
-                <div className="flex items-center gap-2">
-                  <Sparkles className="h-5 w-5 text-yellow-500 animate-pulse" />
-                  <span className="text-sm font-medium text-theme-secondary hidden sm:inline">FIQUE&apos;S-AI</span>
-                </div>
+              <div>
+                <h1 className="text-3xl font-black bg-gradient-to-r from-blue-600 via-cyan-600 to-purple-600 bg-clip-text text-transparent animate-gradient bg-300%">
+                  FIQUE'S-AI
+                </h1>
+                <p className="text-sm font-medium text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                  <Sparkles className="h-3 w-3 text-yellow-500 animate-pulse" />
+                  Your Smart Health Assistant
+                </p>
               </div>
             </div>
-          </header>
+            <div className="flex items-center gap-3">
+              <ThemeToggle />
+              {messages.length > 0 && (
+                <Button
+                  onClick={handleExportChat}
+                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 px-4 py-2 text-white shadow-lg transition hover:from-emerald-600 hover:to-teal-700 hover:scale-105 duration-300"
+                >
+                  <FileDown className="h-4 w-4" />
+                  <span className="hidden sm:inline font-semibold">Export</span>
+                </Button>
+              )}
+              <Button
+                onClick={() => setShowEmergencyCards(!showEmergencyCards)}
+                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-500 to-red-600 px-4 py-2 text-white shadow-lg transition hover:from-red-600 hover:to-red-700 hover:scale-105 duration-300 animate-pulse"
+              >
+                <AlertTriangle className="h-4 w-4" />
+                <span className="font-semibold">Emergency</span>
+              </Button>
+            </div>
+          </div>
+        </header>
 
-          <section className="flex-1 overflow-y-auto p-6">
-            {messages.length === 0 ? (
-              <div className="mx-auto max-w-xl text-center">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-xl">
-                  <MessageCircle className="h-10 w-10 text-white" />
-                </div>
-                <h2 className="mb-3 text-2xl font-bold text-theme-primary">Welcome to SymptomAI</h2>
-                <p className="mb-8 text-theme-secondary">
-                  I&apos;m here to help you understand your symptoms and provide health guidance. How can I assist you today?
-                </p>
-                <div className="grid grid-cols-2 gap-4">
-                  {quickActions.map((action) => (
-                    <Card
-                      key={action.text}
-                      className="group cursor-pointer border-0 bg-white/60 dark:bg-gray-800/60 p-4 backdrop-blur-sm transition hover:scale-105 hover:bg-white/80 dark:hover:bg-gray-800/80 hover:shadow-xl duration-300 animate-in fade-in slide-in-from-bottom"
-                      onClick={() => handleQuickAction(action.text)}
-                    >
-                      <div
-                        className={`mb-2 flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r ${action.color} transition group-hover:scale-110 shadow-lg`}
-                      >
-                        <action.icon className="h-5 w-5 text-white" />
-                      </div>
-                      <p className="text-sm font-medium text-theme-secondary">{action.text}</p>
-                    </Card>
-                  ))}
-                </div>
+        {/* Chat Messages - Scrollable area */}
+        <section className="flex-1 min-h-0 relative z-10 overflow-y-auto p-6">
+          {/* Welcome screen - ALWAYS at the top, visible when scrolling up */}
+          <div className="mx-auto max-w-xl text-center animate-fade-in mb-8">
+            <div className="relative mx-auto mb-8 inline-block">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full blur-2xl opacity-50 animate-pulse" />
+              <div className="relative flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 via-cyan-500 to-purple-500 shadow-2xl">
+                <MessageCircle className="h-12 w-12 text-white animate-bounce-slow" />
               </div>
-            ) : (
-              <div className="space-y-6">
+            </div>
+            <h2 className="mb-4 text-3xl font-black bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient bg-300%">
+              Welcome to FIQUE'S-AI
+            </h2>
+            <p className="mb-10 text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
+              I'm here to help you understand your symptoms and provide health guidance. How can I assist you today?
+            </p>
+            <div className="grid grid-cols-2 gap-6">
+              {quickActions.map((action, index) => (
+                <Card
+                  key={action.text}
+                  className="group cursor-pointer border-0 bg-white/80 dark:bg-gray-800/80 p-6 backdrop-blur-sm transition hover:scale-110 hover:shadow-2xl duration-300 animate-scale-in rounded-2xl"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                  onClick={() => handleQuickAction(action.text)}
+                >
+                  <div className="relative">
+                    <div className={`absolute inset-0 bg-gradient-to-r ${action.color} rounded-xl blur-lg opacity-0 group-hover:opacity-50 transition-opacity duration-300`} />
+                    <div
+                      className={`relative mb-4 flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-r ${action.color} transition group-hover:scale-110 group-hover:rotate-6 shadow-xl duration-300`}
+                    >
+                      <action.icon className="h-7 w-7 text-white" />
+                    </div>
+                  </div>
+                  <p className="text-base font-bold text-gray-900 dark:text-white">{action.text}</p>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Divider - shows when there are messages */}
+          {messages.length > 0 && (
+            <div className="mb-8 mx-auto max-w-4xl">
+              <div className="flex items-center gap-4">
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent" />
+                <span className="text-sm font-medium text-gray-500 dark:text-gray-400 flex items-center gap-2">
+                  <MessageCircle className="h-4 w-4" />
+                  Conversation
+                </span>
+                <div className="flex-1 h-px bg-gradient-to-r from-transparent via-gray-300 dark:via-gray-700 to-transparent" />
+              </div>
+            </div>
+          )}
+
+          {/* Messages - scroll below welcome screen */}
+          {messages.length > 0 && (
+            <div className="space-y-6 mx-auto max-w-4xl">
                 {messages.map((message, index) => (
                   <div
                     key={message.id}
@@ -674,39 +720,40 @@ We typically respond within 24 hours during business days.
                     style={{ animationDelay: `${index * 50}ms` }}
                   >
                     <div
-                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-2xl shadow-lg ${
+                      className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-2xl shadow-2xl animate-pulse ${
                         message.role === "user"
-                          ? "bg-gradient-to-br from-indigo-500 to-purple-500"
-                          : "bg-gradient-to-br from-blue-500 to-cyan-500"
+                          ? "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500"
+                          : "bg-gradient-to-br from-blue-500 via-cyan-500 to-teal-500"
                       }`}
                     >
                       {message.role === "user" ? (
-                        <User className="h-5 w-5 text-white" />
+                        <User className="h-6 w-6 text-white" />
                       ) : (
-                        <Bot className="h-5 w-5 text-white" />
+                        <Bot className="h-6 w-6 text-white" />
                       )}
                     </div>
                     <div className={`flex-1 ${message.role === "user" ? "text-right" : "text-left"}`}>
                       <div
-                        className={`inline-block max-w-lg rounded-2xl p-4 shadow-lg backdrop-blur-sm ${
+                        className={`inline-block max-w-2xl rounded-2xl p-5 shadow-2xl backdrop-blur-sm transition-all duration-300 hover:scale-102 ${
                           message.role === "user"
-                            ? "bg-gradient-to-br from-indigo-500 to-purple-500 text-white"
-                            : "border border-white/20 dark:border-gray-700/20 bg-white/80 dark:bg-gray-800/80 text-theme-primary"
+                            ? "bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white"
+                            : "border-2 border-blue-200/50 dark:border-blue-700/50 bg-white/90 dark:bg-gray-800/90 text-gray-900 dark:text-white"
                         }`}
                       >
-                        <p className="whitespace-pre-wrap text-sm leading-relaxed">{message.content}</p>
+                        <p className="whitespace-pre-wrap text-base leading-relaxed font-medium">{message.content}</p>
                         
                         {/* Confidence Badge for Bot Messages */}
                         {message.role === "bot" && message.confidence && (
-                          <div className="mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">
+                          <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                             {getConfidenceBadge(message.confidence)}
                           </div>
                         )}
                       </div>
                       
                       {/* Message Actions */}
-                      <div className="mt-2 flex items-center gap-3 text-xs text-theme-muted">
-                        <span>
+                      <div className="mt-3 flex items-center gap-3 text-xs font-medium text-gray-600 dark:text-gray-400">
+                        <span className="flex items-center gap-1">
+                          <Clock className="h-3 w-3" />
                           {message.timestamp
                             ? new Date(message.timestamp).toLocaleTimeString([], {
                                 hour: "2-digit",
@@ -719,7 +766,7 @@ We typically respond within 24 hours during business days.
                           <div className={`flex items-center gap-2 ${message.role === "user" ? "flex-row-reverse" : ""}`}>
                             <button
                               onClick={() => handleCopyMessage(message.content)}
-                              className="p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                              className="p-1.5 rounded-lg hover:bg-gradient-to-r hover:from-blue-100 hover:to-cyan-100 dark:hover:from-blue-900/30 dark:hover:to-cyan-900/30 transition-all duration-300"
                               title="Copy message"
                             >
                               <Copy className="h-3 w-3" />
@@ -749,14 +796,14 @@ We typically respond within 24 hours during business days.
                           </div>
                         )}
                       </div>
-                    </div>
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
+              ))}
+            </div>
+          )}
 
-            {isTyping && (
-              <div className="mt-6 flex items-start gap-3">
+          {isTyping && (
+            <div className="mt-6 mx-auto max-w-4xl flex items-start gap-3">
                 <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-cyan-500 shadow-lg">
                   <Bot className="h-5 w-5 text-white" />
                 </div>
@@ -770,73 +817,69 @@ We typically respond within 24 hours during business days.
               </div>
             )}
 
-            <div ref={messagesEndRef} />
-          </section>
+          <div ref={messagesEndRef} />
+        </section>
 
-          <footer className="border-t border-white/20 dark:border-gray-700/20 bg-white/10 dark:bg-gray-800/10 p-6 backdrop-blur-sm">
-            <form onSubmit={handleSubmit} className="flex gap-3">
-              <div className="relative flex-1">
-                <Input
-                  value={input}
-                  onChange={(event) => setInput(event.target.value)}
-                  placeholder="Describe your signs and symptoms ..."
-                  className="w-full rounded-2xl border-white/20 dark:border-gray-700/20 bg-white/80 dark:bg-gray-800/80 py-3 pl-4 pr-12 text-theme-primary placeholder:text-theme-muted focus:border-transparent focus:ring-2 focus:ring-blue-500/40"
-                  disabled={isLoading}
-                />
-                <Heart className="absolute right-3 top-1/2 h-5 w-5 -translate-y-1/2 text-red-400" />
-              </div>
-              <Button
-                type="submit"
-                disabled={isLoading || !input.trim()}
-                className="rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-3 text-white shadow-lg transition hover:from-blue-600 hover:to-cyan-600 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <Send className="h-5 w-5" />
-              </Button>
-            </form>
-            <p className="mt-3 text-center text-xs text-theme-muted">
-              ⚠️ This is for informational purposes only. Always consult healthcare professionals for medical advice.
-            </p>
+        {/* Input Footer - Fixed at bottom */}
+        <footer className="mt-auto flex-shrink-0 relative z-20 border-t border-white/20 dark:border-gray-700/20 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl shadow-lg">
+            <div className="px-4 pt-4 pb-1">
+              <form onSubmit={handleSubmit} className="flex gap-3 max-w-4xl mx-auto">
+                <div className="relative flex-1">
+                  <Input
+                    value={input}
+                    onChange={(event) => setInput(event.target.value)}
+                    placeholder="Describe your signs and symptoms ..."
+                    className="w-full rounded-2xl border-0 bg-white dark:bg-gray-800 py-3 pl-4 pr-4 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0 shadow-sm"
+                    disabled={isLoading}
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  disabled={isLoading || !input.trim()}
+                  className="rounded-2xl bg-gradient-to-r from-blue-500 to-cyan-500 px-6 py-3 text-white shadow-lg transition hover:from-blue-600 hover:to-cyan-600 hover:scale-105 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:scale-100"
+                >
+                  <Send className="h-5 w-5" />
+                </Button>
+              </form>
+              <p className="text-center text-xs text-gray-500 dark:text-gray-400 max-w-4xl mx-auto mt-2">
+                ⚠️ This is for informational purposes only. Always consult healthcare professionals for medical advice.
+              </p>
+            </div>
           </footer>
-        </div>
       </main>
 
-      {showEmergency && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-3xl bg-theme-card shadow-2xl animate-in slide-in-from-bottom duration-300">
-            <div className="flex items-center justify-between rounded-t-3xl bg-gradient-to-r from-blue-500 to-cyan-600 p-6 text-white">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20">
-                  <AlertTriangle className="h-6 w-6" />
+      {/* Emergency Modal Overlay - Shows on top when button is clicked */}
+      {showEmergencyCards && (
+        <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/40 backdrop-blur-sm animate-in fade-in duration-200 overflow-y-auto p-4">
+          <div className="w-full max-w-4xl mt-20 mb-8 animate-in slide-in-from-top duration-300">
+            <div className="rounded-2xl bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-600 p-4 text-white shadow-2xl mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/20 animate-pulse">
+                    <AlertTriangle className="h-6 w-6" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold">Emergency Contacts</h2>
+                    <p className="text-xs text-blue-100">Quick access to emergency services</p>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-xl font-bold">Emergency Contacts</h2>
-                  <p className="text-sm text-red-100">Quick access to emergency services</p>
-                </div>
+                <button
+                  onClick={() => setShowEmergencyCards(false)}
+                  className="p-2 rounded-lg hover:bg-white/20 transition"
+                >
+                  <X className="h-5 w-5" />
+                </button>
               </div>
-              <Button
-                onClick={() => setShowEmergency(false)}
-                variant="ghost"
-                size="sm"
-                className="rounded-xl text-white hover:bg-white/20"
-              >
-                <X className="h-5 w-5" />
-              </Button>
             </div>
 
-            <div className="m-6 rounded-lg border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 p-4 text-blue-700 dark:text-blue-300">
-              <button
-                onClick={() => setIsEmergencyCollapsed(!isEmergencyCollapsed)}
-                className="flex w-full items-center justify-between font-semibold text-blue-800 dark:text-blue-200"
-              >
-                <span>When to Call Emergency Services</span>
-                {isEmergencyCollapsed ? (
-                  <ChevronDown className="h-5 w-5" />
-                ) : (
-                  <ChevronUp className="h-5 w-5" />
-                )}
-              </button>
-              {!isEmergencyCollapsed && (
-                <ul className="mt-2 space-y-1 text-sm animate-in slide-in-from-top duration-200">
+            <div className="rounded-2xl bg-white dark:bg-gray-800 p-6 shadow-2xl space-y-4">
+              {/* When to Call Section */}
+              <div className="rounded-lg border-l-4 border-blue-500 bg-blue-50 dark:bg-blue-900/20 p-4 text-sm text-blue-700 dark:text-blue-300">
+                <p className="font-semibold mb-2 flex items-center gap-2">
+                  <AlertTriangle className="h-4 w-4" />
+                  When to Call Emergency Services:
+                </p>
+                <ul className="space-y-1 text-xs ml-6">
                   <li>• Difficulty breathing or shortness of breath</li>
                   <li>• Chest pain or pressure</li>
                   <li>• Severe bleeding or trauma</li>
@@ -844,60 +887,58 @@ We typically respond within 24 hours during business days.
                   <li>• Signs of stroke (face drooping, arm weakness, speech difficulty)</li>
                   <li>• Severe allergic reactions</li>
                 </ul>
-              )}
-            </div>
+              </div>
 
-            <div className="space-y-4 p-6">
-              {emergencyContacts.map((contact, index) => (
-                <Card
-                  key={contact.name}
-                  className={`cursor-pointer border-0 p-4 shadow-lg transition hover:scale-[1.02] hover:shadow-xl animate-in slide-in-from-bottom duration-300 ${
-                    contact.urgent ? "ring-2 ring-red-200 dark:ring-red-800" : ""
-                  }`}
-                  style={{ animationDelay: `${index * 50}ms` }}
-                  onClick={() => {
-                    if (contact.number.toLowerCase().startsWith("text")) {
-                      window.open(`sms:${contact.number.replace(/\D/g, "")}`, "_blank");
-                    } else {
-                      window.open(`tel:${contact.number.replace(/\D/g, "")}`, "_blank");
-                    }
-                  }}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
+              {/* Emergency Contact Cards Grid */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {emergencyContacts.map((contact, index) => (
+                  <Card
+                    key={contact.name}
+                    className={`cursor-pointer border-2 p-4 shadow-lg transition hover:scale-105 hover:shadow-2xl animate-in slide-in-from-bottom duration-300 ${
+                      contact.urgent 
+                        ? "border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/10" 
+                        : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800"
+                    }`}
+                    style={{ animationDelay: `${index * 50}ms` }}
+                    onClick={() => {
+                      if (contact.number.toLowerCase().startsWith("text")) {
+                        window.open(`sms:${contact.number.replace(/\D/g, "")}`, "_blank");
+                      } else {
+                        window.open(`tel:${contact.number.replace(/\D/g, "")}`, "_blank");
+                      }
+                    }}
+                  >
+                    <div className="flex items-start gap-4">
                       <div
-                        className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-r ${contact.color} text-white shadow-lg`}
+                        className={`flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-r ${contact.color} text-white shadow-lg`}
                       >
-                        <contact.icon className="h-6 w-6" />
+                        <contact.icon className="h-7 w-7" />
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-semibold text-theme-primary">{contact.name}</h3>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-bold text-base text-gray-900 dark:text-white">{contact.name}</h3>
                           {contact.urgent && (
-                            <span className="rounded-full bg-red-100 dark:bg-red-900/30 px-2 py-1 text-xs font-medium text-red-600 dark:text-red-400">
+                            <span className="rounded-full bg-red-500 px-2 py-0.5 text-xs font-bold text-white flex-shrink-0">
                               URGENT
                             </span>
                           )}
                         </div>
-                        <p className="text-sm text-theme-secondary">{contact.description}</p>
-                        <p className="mt-1 font-mono text-lg font-bold text-theme-primary">{contact.number}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">{contact.description}</p>
+                        <div className="flex items-center justify-between mt-3">
+                          <p className="font-mono text-xl font-bold text-gray-900 dark:text-white">{contact.number}</p>
+                          <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-lg">
+                            <Phone className="h-4 w-4" />
+                            Tap to call
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 text-sm text-theme-muted">
-                      <Phone className="h-5 w-5" />
-                      Tap to call
-                    </div>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                  </Card>
+                ))}
+              </div>
 
-            <div className="space-y-3 rounded-b-3xl bg-theme-secondary p-6">
-              <h3 className="flex items-center gap-2 font-semibold text-theme-primary">
-                <MapPin className="h-5 w-5" />
-                Additional Resources
-              </h3>
-              <div className="grid gap-3 md:grid-cols-2">
+              {/* Find Nearby Buttons */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-4">
                 <Button
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-blue-500 to-cyan-500 py-3 font-semibold text-white shadow-lg transition hover:from-blue-600 hover:to-cyan-600"
                   onClick={() => {
@@ -947,7 +988,8 @@ We typically respond within 24 hours during business days.
                   Urgent Care Locator
                 </Button>
               </div>
-              <div className="rounded-lg bg-blue-50 dark:bg-blue-900/20 p-3 text-xs text-blue-700 dark:text-blue-300">
+
+              <div className="rounded-lg bg-orange-50 dark:bg-orange-900/20 p-3 text-xs text-orange-800 dark:text-orange-300 text-center">
                 <strong>Note:</strong> These contacts are for Rwanda. International users should contact their local emergency services.
               </div>
             </div>
