@@ -124,27 +124,83 @@ class SymptomPredictor:
             raise e
 
     def preprocess_input(self, user_symptoms):
+        """
+        Preprocess and validate user symptoms with fuzzy matching.
+        Returns tuple: (cleaned_symptoms, unknown_symptoms, matched_info)
+        """
         cleaned = []
+        unknown = []
+        matched_info = []
+        
         for sym in user_symptoms:
             # Normalize the symptom
             normalized_sym = sym.lower().strip()
+            if not normalized_sym:
+                continue
+                
             # Use fuzzy matching to find the closest match
             result = process.extractOne(normalized_sym, self.symptom_vocab)
             if result:
                 match, score, _ = result
                 if score > 60:
                     cleaned.append(match)
-        return cleaned
+                    matched_info.append({
+                        'original': sym,
+                        'matched': match,
+                        'confidence': round(score, 2)
+                    })
+                else:
+                    # Low confidence match - treat as unknown
+                    unknown.append(sym)
+            else:
+                unknown.append(sym)
+                
+        return cleaned, unknown, matched_info
 
-    def match_disease(self, user_symptoms):
-        user_symptoms = [s.lower().strip() for s in user_symptoms]
-        processed_symptoms = self.preprocess_input(user_symptoms)
+    def match_disease(self, user_symptoms, min_symptoms=1, min_confidence=30):
+        """
+        Match disease based on symptoms with validation and accuracy reporting.
         
+        Args:
+            user_symptoms: List of symptom strings
+            min_symptoms: Minimum number of valid symptoms required
+            min_confidence: Minimum confidence threshold for prediction
+            
+        Returns:
+            Dictionary with prediction results or None if no match
+        """
+        user_symptoms = [s.lower().strip() for s in user_symptoms if s.strip()]
+        
+        # Validate input
+        if not user_symptoms:
+            return {
+                "error": "no_symptoms",
+                "message": "No symptoms provided. Please describe your symptoms."
+            }
+        
+        # Preprocess symptoms with validation
+        processed_symptoms, unknown_symptoms, matched_info = self.preprocess_input(user_symptoms)
+        
+        # Check if we have enough valid symptoms
         if not processed_symptoms:
-            return None
+            return {
+                "error": "unknown_symptoms",
+                "message": "None of the provided symptoms are recognized. Please check spelling or try different symptom descriptions.",
+                "unknown_symptoms": unknown_symptoms,
+                "suggestions": "Try using common medical terms like 'fever', 'cough', 'headache', 'fatigue', etc."
+            }
+        
+        if len(processed_symptoms) < min_symptoms:
+            return {
+                "error": "insufficient_symptoms",
+                "message": f"Only {len(processed_symptoms)} valid symptom(s) recognized. Please provide more symptoms for accurate diagnosis.",
+                "recognized_symptoms": [m['matched'] for m in matched_info],
+                "unknown_symptoms": unknown_symptoms,
+                "suggestion": "Add more symptoms to improve accuracy. At least 2-3 symptoms are recommended."
+            }
 
-        best_match = None
-        best_score = 0
+        # Find best matching diseases (top 3)
+        disease_scores = []
 
         for _, row in self.df.iterrows():
             symptoms = row['symptoms']
@@ -154,6 +210,7 @@ class SymptomPredictor:
             # Calculate weighted match score
             total_weight = 0
             matched_weight = 0
+            matched_symptoms = []
             
             for sym in processed_symptoms:
                 # Get symptom weight (default to 1 if not found)
@@ -166,27 +223,89 @@ class SymptomPredictor:
                     _, score, _ = result
                     if score > 70:
                         matched_weight += weight * (score / 100)
+                        matched_symptoms.append(sym)
             
             # Calculate final match score
             if total_weight > 0:
                 match_score = (matched_weight / total_weight) * 100
                 
-                if match_score > best_score:
-                    best_score = match_score
-                    best_match = row
-
-        if best_match is not None and best_score > 30:
-            return {
-                "disease": best_match["disease"],
-                "description": best_match.get("description", "No description available"),
-                "medications": str(best_match.get("medications", "")).split('|') if best_match.get("medications") else [],
-                "procedures": str(best_match.get("procedures", "")).split('|') if best_match.get("procedures") else [],
-                "precautions": str(best_match.get("precautions", "")).split('|') if best_match.get("precautions") else [],
-                "specialist": best_match.get("specialist", "General Practitioner"),
-                "confidence": round(best_score, 2)
+                # Calculate coverage (what % of disease symptoms are matched)
+                coverage = (len(matched_symptoms) / len(symptoms)) * 100 if symptoms else 0
+                
+                disease_scores.append({
+                    "row": row,
+                    "score": match_score,
+                    "coverage": coverage,
+                    "matched_symptoms": matched_symptoms
+                })
+        
+        # Sort by score
+        disease_scores.sort(key=lambda x: x['score'], reverse=True)
+        
+        # Get best match
+        if disease_scores and disease_scores[0]['score'] >= min_confidence:
+            best = disease_scores[0]
+            
+            # Determine accuracy level
+            confidence = best['score']
+            if confidence >= 75:
+                accuracy_level = "high"
+                accuracy_message = "High confidence prediction"
+            elif confidence >= 50:
+                accuracy_level = "medium"
+                accuracy_message = "Moderate confidence - consider providing more symptoms"
+            else:
+                accuracy_level = "low"
+                accuracy_message = "Low confidence - more symptoms needed for accurate diagnosis"
+            
+            result = {
+                "disease": best["row"]["disease"],
+                "description": best["row"].get("description", "No description available"),
+                "medications": str(best["row"].get("medications", "")).split('|') if best["row"].get("medications") else [],
+                "procedures": str(best["row"].get("procedures", "")).split('|') if best["row"].get("procedures") else [],
+                "precautions": str(best["row"].get("precautions", "")).split('|') if best["row"].get("precautions") else [],
+                "specialist": best["row"].get("specialist", "General Practitioner"),
+                "confidence": round(confidence, 2),
+                "accuracy_level": accuracy_level,
+                "accuracy_message": accuracy_message,
+                "matched_symptoms": best["matched_symptoms"],
+                "symptom_match_info": matched_info,
+                "unknown_symptoms": unknown_symptoms if unknown_symptoms else None,
+                "total_symptoms_provided": len(user_symptoms),
+                "recognized_symptoms": len(processed_symptoms)
             }
+            
+            # Add alternative diagnoses if available
+            if len(disease_scores) > 1:
+                alternatives = []
+                for alt in disease_scores[1:4]:  # Top 3 alternatives
+                    if alt['score'] >= min_confidence * 0.7:  # At least 70% of best score
+                        alternatives.append({
+                            "disease": alt["row"]["disease"],
+                            "confidence": round(alt['score'], 2)
+                        })
+                if alternatives:
+                    result["alternative_diagnoses"] = alternatives
+            
+            return result
         else:
-            return None
+            # No confident match found
+            if disease_scores:
+                best_score = disease_scores[0]['score']
+                return {
+                    "error": "low_confidence",
+                    "message": f"Unable to confidently diagnose (best match: {best_score:.1f}%). Please provide more specific symptoms.",
+                    "recognized_symptoms": [m['matched'] for m in matched_info],
+                    "unknown_symptoms": unknown_symptoms if unknown_symptoms else None,
+                    "suggestion": "Try adding more symptoms or being more specific about your condition."
+                }
+            else:
+                return {
+                    "error": "no_match",
+                    "message": "Could not find a matching disease for the provided symptoms.",
+                    "recognized_symptoms": [m['matched'] for m in matched_info],
+                    "unknown_symptoms": unknown_symptoms if unknown_symptoms else None
+                }
 
 class GreetingsResponder:
     def __init__(self, csv_path=None):
