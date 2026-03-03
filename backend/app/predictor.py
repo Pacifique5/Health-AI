@@ -372,10 +372,31 @@ class GreetingsResponder:
             }
 
     def get_response(self, user_input):
-        user_input = user_input.lower().strip()
-        match, score, _ = process.extractOne(user_input, self.greetings)
+        """
+        Check if user input is a greeting.
+        Returns greeting response if detected, None otherwise.
+        """
+        user_input_lower = user_input.lower().strip()
+        
+        # First check: Is the entire input a greeting? (exact or fuzzy match)
+        match, score, _ = process.extractOne(user_input_lower, self.greetings)
         if score > 80:
+            print(f"🎯 Greeting detected: '{user_input}' matched '{match}' with {score}% confidence")
             return self.responses.get(match)
+        
+        # Second check: Does input START with a greeting?
+        # This handles cases like "good night, I have fever"
+        words = user_input_lower.split()
+        
+        # Try matching first 1-3 words as potential multi-word greetings
+        for word_count in range(min(3, len(words)), 0, -1):
+            prefix = ' '.join(words[:word_count])
+            match, score, _ = process.extractOne(prefix, self.greetings)
+            if score > 85:  # Higher threshold for prefix matching
+                print(f"🎯 Greeting detected at start: '{prefix}' matched '{match}' with {score}% confidence")
+                return self.responses.get(match)
+        
+        print(f"❌ No greeting detected in: '{user_input}'")
         return None
 
 # Simple in-memory user storage for development
